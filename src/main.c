@@ -1,6 +1,12 @@
 /**
  * CS 4900
  * Quadratic Equation Solver
+ * 2018-09-17
+ *
+ * Authors:
+ *  Steven H Johnson
+ *  Brandon Rodriguez
+ *  Joshua Sziede
  */
 
 
@@ -22,6 +28,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "argparse.h"
+#include "helper.h"
+
 
 // Constant Defines.
 
@@ -39,6 +48,8 @@ void exit_program();
  * Initializes and runs program.
  */
 int main(int argc, char* argv[]) {
+
+    ARGPARSE *argparse = argparse_new();
 
     // No commands provided. Display help.
     if (argc == 1) {
@@ -58,6 +69,10 @@ int main(int argc, char* argv[]) {
             printf("%s\n", argv[index + 1]);
         }
     }
+
+    printf("argparse: %p\n", (void *) argparse);
+
+    argparse_free(argparse);
 
     exit_program(0);
 }
