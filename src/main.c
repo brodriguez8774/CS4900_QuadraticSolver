@@ -49,7 +49,32 @@ void exit_program();
  */
 int main(int argc, char* argv[]) {
 
-    ARGPARSE *argparse = argparse_new();
+    ARGPARSE *argparse = argparse_new(
+        "Quadratic Equation Solver",
+        "  This program solves quadratic equations.\n"
+        "  Equations are expected to be in the format ax^2 + bx + c = 0.\n"
+        "  Expected input values are a, b, and c, separated by spaces.\n"
+        "  The program will calculate and display the result, as well as "
+        "warnings about possible rounding, if applicable.\n\n"
+        "NUM_FORMAT: A, B, C are in the following format: n[.n][En]\n"
+        "            where n is any number of digits.\n"
+        "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
+        "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
+        3);
+
+    size_t arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
+    size_t arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
+    size_t arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
+
+    printf("Arg text: %s\n", argparse->arguments[0]->text);
+
+    argparse_parse(argparse, argc, argv);
+
+    printf("A: %s\n", argparse_get_argument(argparse, arg_a));
+    printf("B: %s\n", argparse_get_argument(argparse, arg_b));
+    printf("C: %s\n", argparse_get_argument(argparse, arg_c));
+
+    exit(0);
 
     // No commands provided. Display help.
     if (argc == 1) {
