@@ -39,8 +39,6 @@
 
 
 // Method Declaration.
-void display_help_text();
-void display_invalid_arg_text();
 void run_quad_solver();
 void exit_program();
 
@@ -52,30 +50,48 @@ void exit_program();
 int main(int argc, char* argv[]) {
     printf("\n");
 
-    ARGPARSE *argparse = argparse_new();
+    ARGPARSE *argparse = argparse_new(
+        "Quadratic Equation Solver",
+        "  This program solves quadratic equations.\n"
+        "  Equations are expected to be in the format ax^2 + bx + c = 0.\n"
+        "  Expected input values are a, b, and c, separated by spaces.\n"
+        "  The program will calculate and display the result, as well as "
+        "warnings about possible rounding, if applicable.\n\n"
+        "NUM_FORMAT: A, B, C are in the following format: n[.n][En]\n"
+        "            where n is any number of digits.\n"
+        "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
+        "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
+        4);
 
-    if (argc == 1) {
-        // No args provided. Display help.
-        display_help_text();
-    } else if (argc == 2) {
-        // One arg provided.
+    // Expecting three positional arguments.
+    ARGKEY arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
+    ARGKEY arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
+    ARGKEY arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
 
-        // Handling for -h (help) arg.
-        if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
-            display_help_text();
-        } else {
-            // No other commands supported yet. Display warning and close.
-            display_invalid_arg_text();
-        }
+    // debug option
+    ARGKEY arg_debug = argparse_add_argument(
+        argparse, "--debug", "-d", "Enable debug mode.");
+    char debug_mode = 0; // TODO: Use this debug flag in our code?
 
-    } else if (argc == 3) {
-        // Two args provided. Display warning and close.
-        display_invalid_arg_text();
-    } else if (argc == 4) {
+    char parse_errors = argparse_parse(argparse, argc, argv);
+    if (parse_errors == 0) {
+        const char *string_a = NULL;
+        const char *string_b = NULL;
+        const char *string_c = NULL;
+
+        argparse_get_argument(argparse, arg_a, &string_a);
+        argparse_get_argument(argparse, arg_b, &string_b);
+        argparse_get_argument(argparse, arg_c, &string_c);
+
+        debug_mode = argparse_get_argument(argparse, arg_debug, NULL);
+
+        printf("A: %s\nB: %s\nC: %s\n", string_a, string_b, string_c);
+        printf("Debug Mode: %d\n", debug_mode);
+
         // Three args provided.
-        int a = atoi(argv[1]);
-        int b = atoi(argv[2]);
-        int c = atoi(argv[3]);
+        int a = atoi(string_a);
+        int b = atoi(string_b);
+        int c = atoi(string_c);
 
         // Check for valid args.
         if ((a == 0) && (b == 0) && (c == 0)) {
@@ -87,48 +103,12 @@ int main(int argc, char* argv[]) {
             // At least one of a, b, or c is non-zero. Execute solver.
             run_quad_solver(a, b, c);
         }
-    } else {
-        // Four or more args provided. Display warning and close.
-        display_invalid_arg_text();
     }
-
-    printf("argparse: %p\n", (void *) argparse);
 
     argparse_free(argparse);
 
     exit_program(0);
 }
-
-
-/**
- * Displays program help text.
- * Called when no args are provided, or -h arg is provided.
- */
-void display_help_text() {
-    printf("Quadratic Equation Solver Help Menu\n");
-    printf("\n");
-    printf("Description:\n");
-    printf("  This program solves quadratic equations.\n");
-    printf("  Equations are expected to be in the format ax^2 + bx + c = 0.\n");
-    printf("  Expected input values are a, b, and c, separated by spaces.\n");
-    printf("  The program will calculate and display the result, as well as warnings about possible rounding, if applicable.\n");
-    printf("\n");
-    printf("Example program input:\n");
-    printf("  quad_solver 4 2 1\n");
-    printf("  Will solve for the equation 4x^2 + 2x + 1 = 0\n");
-    printf("\n");
-    printf("To see this help menu again, pass the \"-h\" or \"--help\" args.\n");
-}
-
-
-/**
- * Displays warning text for invalid user args.
- */
-void display_invalid_arg_text() {
-    printf("Invalid args passed.\n");
-    printf("Please use the --help for more information.\n");
-}
-
 
 /**
  * Runs the quad solver program.

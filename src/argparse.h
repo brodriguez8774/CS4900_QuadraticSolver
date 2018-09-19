@@ -1,16 +1,39 @@
 #ifndef _ARGPARSE_H
 #define _ARGPARSE_H
+#include <stdlib.h>
+
+// Encapsulate away the key type
+typedef size_t ARGKEY;
 
 typedef struct {
+    unsigned char set; // boolean
     unsigned char optional;
+    // TODO: handle if argument has data after it (e.g. '--max-size 7')
+    //size_t nargs; // number of arguments immediately after this argument
+    const char *text;
+    const char *flag;
+    const char *help;
+    const char *value; // value after parsing
 } ARGUMENT;
 
 typedef struct {
-    unsigned short arguments_length;
+    const char *prologue;
+    const char *description;
+    const char *epilogue;
+    size_t arguments_length;
+    size_t arguments_size;
+    ARGKEY arg_help;
     ARGUMENT **arguments;
 } ARGPARSE;
 
-ARGPARSE *argparse_new();
+ARGPARSE *argparse_new(const char *prologue, const char *description, const char *epilogue, size_t num_args);
 void argparse_free(ARGPARSE *argparse);
+
+ARGKEY argparse_add_argument(
+        ARGPARSE *argparse, const char *text, const char *flag,
+        const char *help);
+char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value);
+
+char argparse_parse(ARGPARSE *argparse, int argc, char **argv);
 
 #endif // _ARGPARSE_H
