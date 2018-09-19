@@ -41,6 +41,7 @@ void exit_program();
  * Initializes and runs program.
  */
 int main(int argc, char* argv[]) {
+    printf("\n");
 
     if (argc == 1) {
         // No args provided. Display help.
@@ -63,10 +64,22 @@ int main(int argc, char* argv[]) {
         display_invalid_arg_text();
         exit_program(0);
     } else if (argc == 4) {
-        // Three args provided. Execute program.
-        printf("Executing quad solver for %s, %s, %s\n", argv[1], argv[2], argv[3]);
-        run_quad_solver(argv[1], argv[2], argv[3]);
-        exit_program(0);
+        // Three args provided.
+        int a = atoi(argv[1]);
+        int b = atoi(argv[2]);
+        int c = atoi(argv[3]);
+
+        // Check for valid args.
+        if ((a == 0) && (b == 0) && (c == 0)) {
+            // Invalid args provided. Exiting.
+            printf("Recieved %dx^2 + %dx + %d. Invalid equation.\n", a, b, c);
+            printf("Note that non-integer values are parsed as \"0\".\n");
+            printf("Please try again.\n");
+        } else {
+            // At least one of a, b, or c is non-zero. Execute solver.
+            run_quad_solver(a, b, c);
+            exit_program(0);
+        }
     } else {
         // Four or more args provided. Display warning and close.
         display_invalid_arg_text();
@@ -82,7 +95,7 @@ int main(int argc, char* argv[]) {
  * Called when no args are provided, or -h arg is provided.
  */
 void display_help_text() {
-    printf("\nQuadratic Equation Solver Help Menu\n");
+    printf("Quadratic Equation Solver Help Menu\n");
     printf("\n");
     printf("Description:\n");
     printf("  This program solves quadratic equations.\n");
@@ -95,7 +108,6 @@ void display_help_text() {
     printf("  Will solve for the equation 4x^2 + 2x + 1 = 0\n");
     printf("\n");
     printf("To see this help menu again, pass the \"-h\" or \"--help\" args.\n");
-    printf("\n");
 }
 
 
@@ -112,13 +124,13 @@ void display_invalid_arg_text() {
  * Runs the quad solver program.
  */
 void run_quad_solver(int a, int b, int c) {
-
+    printf("Calculating %dx^2 + %dx + %d.\n", a, b, c);
 }
 
 /**
  * Handles program exit and cleanup.
  */
 void exit_program(int exit_code) {
-    printf("Exiting program with code of %d.\n", exit_code);
+    printf("\nExiting program with code of %d.\n", exit_code);
     exit(exit_code);
 }
