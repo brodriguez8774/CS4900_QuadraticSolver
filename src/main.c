@@ -31,6 +31,8 @@
 
 // Method Declaration.
 void display_help_text();
+void display_invalid_arg_text();
+void run_quad_solver();
 void exit_program();
 
 
@@ -40,23 +42,35 @@ void exit_program();
  */
 int main(int argc, char* argv[]) {
 
-    // No commands provided. Display help.
     if (argc == 1) {
+        // No args provided. Display help.
         display_help_text();
-    } else {
+    } else if (argc == 2) {
+        // One arg provided.
 
         // Handling for -h (help) arg.
-        if ( ((argc == 2) && (strcmp(argv[1], "-h") == 0)) ||
-             ((argc == 2) && (strcmp(argv[1], "--help") == 0)) ) {
+        if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
             display_help_text();
+            exit_program(0);
+        } else {
+            // No other commands supported yet. Display warning and close.
+            display_invalid_arg_text();
             exit_program(0);
         }
 
-        printf("You have provided one or more args. No handling yet.\n");
-        // Display passed args.
-        for (int index = 0; index < (argc - 1); index++) {
-            printf("%s\n", argv[index + 1]);
-        }
+    } else if (argc == 3) {
+        // Two args provided. Display warning and close.
+        display_invalid_arg_text();
+        exit_program(0);
+    } else if (argc == 4) {
+        // Three args provided. Execute program.
+        printf("Executing quad solver for %s, %s, %s\n", argv[1], argv[2], argv[3]);
+        run_quad_solver(argv[1], argv[2], argv[3]);
+        exit_program(0);
+    } else {
+        // Four or more args provided. Display warning and close.
+        display_invalid_arg_text();
+        exit_program(0);
     }
 
     exit_program(0);
@@ -84,6 +98,22 @@ void display_help_text() {
     printf("\n");
 }
 
+
+/**
+ * Displays warning text for invalid user args.
+ */
+void display_invalid_arg_text() {
+    printf("Invalid args passed.\n");
+    printf("Please use the --help for more information.\n");
+}
+
+
+/**
+ * Runs the quad solver program.
+ */
+void run_quad_solver(int a, int b, int c) {
+
+}
 
 /**
  * Handles program exit and cleanup.
