@@ -10,6 +10,18 @@
 
 #define DESCRIPTION_OFFSET 16
 
+/**
+ * Create an ARGPARSE object.
+ *
+ * prologue, description, and epilogue are optional and can be NULL.
+ *
+ * NOTE: num_args must be set to at least the number of arguments that will be
+ * added (not including the help argument).
+ *
+ * Always includes the -h, --help argument to display help text.
+ *
+ * Caller should call argparse_free() when done
+ */
 ARGPARSE *argparse_new(
         const char *prologue, const char *description, const char *epilogue,
         size_t num_args) {
@@ -28,17 +40,41 @@ ARGPARSE *argparse_new(
         argparse->arguments[i] = calloc_or_quit(1, sizeof(ARGUMENT));
     }
 
-    argparse_add_argument(argparse, "--help", "-h", "Show this help text");
+    argparse->arg_help = argparse_add_argument(
+        argparse, "--help", "-h", "Show this help text");
 
     return argparse;
 }
 
+/**
+ * Release resources used by argparse.
+ */
 void argparse_free(ARGPARSE *argparse) {
+    // free each argument
+    for (size_t i = 0; i < argparse->arguments_size; ++i) {
+        free(argparse->arguments[i]);
+    }
+
+    free(argparse->arguments);
     free(argparse);
 }
 
-// Returns a key (index) so caller can use to get parsed results for argument
-size_t argparse_add_argument(
+/**
+ * Add an argument to the parser.
+ *
+ * If flag is given (e.g. "-x") or text starts with "--" (e.g. "--extra") then
+ * it is assumed the argument is optional.
+ *
+ * help is shown next to the argument text (and flag if given) when the help
+ * text is shown.
+ *
+ * Will exit() if there is no more room to add an argument.
+ *
+ * Returns a key that can be used with argparse_get_argument() after
+ * argparse_parse() has been run, to get whether the flag was provided or the
+ * string value for a positional argument.
+ */
+ARGKEY argparse_add_argument(
         ARGPARSE *argparse, const char *text, const char *flag,
         const char *help) {
     if (argparse->arguments_length >= argparse->arguments_size) {
@@ -56,6 +92,7 @@ size_t argparse_add_argument(
     argument->flag = flag;
     argument->help = help;
     argument->value = NULL;
+    argument->set = 0;
 
     if (flag != NULL || strncmp(text, "--", 2) == 0) {
         argument->optional = 1;
@@ -64,14 +101,29 @@ size_t argparse_add_argument(
     return index;
 }
 
-const char *argparse_get_argument(ARGPARSE *argparse, size_t key) {
+/**
+ * Get whether the argument matching the given key was provided.
+ *
+ * Positional arguments will have strings stored in the pointer given by value
+ * if value is not NULL.
+ *
+ * Returns 1 if argument was given, and 0 if not.
+ */
+char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value) {
     if (key < 0 || key >= argparse->arguments_length) {
         code_error_quit("invalid key");
     }
 
-    return argparse->arguments[key]->value;
+    if (value) {
+        *value = argparse->arguments[key]->value;
+    }
+
+    return argparse->arguments[key]->set;
 }
 
+/**
+ * Print out the help text for all current arguments.
+ */
 void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
     ARGUMENT *argument = NULL;
     short x, i;
@@ -117,7 +169,15 @@ void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
     }
 }
 
-void argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
+/**
+ * Parse given arguments.
+ *
+ * Returns 1 if not enough required arguments were given, or the help text was
+ * asked to be shown. Caller should free the argparse object.
+ *
+ * Returns 0 otherwise. Caller should use argparse_get_argument() to see values.
+ */
+char argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
     // Count how many args we require at a minimum
     int require = 1; // Always require the first argument (program name)
     short i, j;
@@ -132,28 +192,38 @@ void argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
     if (argc < require) {
         // print help and quit
         argparse_print_help(argparse, argv[0]);
+        return 1;
     } else {
-        // TODO: Parse args to see if need to show help
-        printf("Checking arguments...\n");
-
+        // Actually parse the arguments
         const char *value = NULL;
         for (i = 1; i < argc; ++i) {
             value = argv[i];
 
-            // First pass getting all required/positional arguments
             for (j = 0; j < argparse->arguments_length; ++j) {
                 argument = argparse->arguments[j];
-                if (argument->value) {
+                if (argument->value || argument->set) {
                     continue; // already processed
-                } else if (argument->flag && strncmp(value, argument->flag, 2) == 0) {
-                    printf("TODO: Trigger argument for %s\n", argument->text);
+                } else if (argument->flag && (
+                    strncmp(value, argument->flag, 2) == 0 ||
+                    strcmp(value, argument->text) == 0)
+                ) {
+                    // No value to get
+                    argument->set = 1;
                     break;
                 } else if (argument->optional == 0) {
                     argument->value = value;
-                    break; // found our positional argument
+                    argument->set = 1;
+                    break; // found positional argument
                 }
             }
         }
-
     }
+
+    if (argparse_get_argument(argparse, argparse->arg_help, NULL)) {
+        // print help and quit
+        argparse_print_help(argparse, argv[0]);
+        return 1;
+    }
+
+    return 0;
 }

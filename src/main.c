@@ -60,42 +60,33 @@ int main(int argc, char* argv[]) {
         "            where n is any number of digits.\n"
         "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
         "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
-        3);
+        4);
 
-    size_t arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
-    size_t arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
-    size_t arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
+    // Expecting three positional arguments.
+    ARGKEY arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
+    ARGKEY arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
+    ARGKEY arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
 
-    printf("Arg text: %s\n", argparse->arguments[0]->text);
+    // debug option
+    ARGKEY arg_debug = argparse_add_argument(
+        argparse, "--debug", "-d", "Enable debug mode.");
+    char debug_mode = 0;
 
-    argparse_parse(argparse, argc, argv);
+    char parse_errors = argparse_parse(argparse, argc, argv);
+    if (parse_errors == 0) {
+        const char *string_a = NULL;
+        const char *string_b = NULL;
+        const char *string_c = NULL;
 
-    printf("A: %s\n", argparse_get_argument(argparse, arg_a));
-    printf("B: %s\n", argparse_get_argument(argparse, arg_b));
-    printf("C: %s\n", argparse_get_argument(argparse, arg_c));
+        argparse_get_argument(argparse, arg_a, &string_a);
+        argparse_get_argument(argparse, arg_b, &string_b);
+        argparse_get_argument(argparse, arg_c, &string_c);
 
-    exit(0);
+        debug_mode = argparse_get_argument(argparse, arg_debug, NULL);
 
-    // No commands provided. Display help.
-    if (argc == 1) {
-        display_help_text();
-    } else {
-
-        // Handling for -h (help) arg.
-        if ( ((argc == 2) && (strcmp(argv[1], "-h") == 0)) ||
-             ((argc == 2) && (strcmp(argv[1], "--help") == 0)) ) {
-            display_help_text();
-            exit_program(0);
-        }
-
-        printf("You have provided one or more args. No handling yet.\n");
-        // Display passed args.
-        for (int index = 0; index < (argc - 1); index++) {
-            printf("%s\n", argv[index + 1]);
-        }
+        printf("A: %s\nB: %s\nC: %s\n", string_a, string_b, string_c);
+        printf("Debug Mode: %d\n", debug_mode);
     }
-
-    printf("argparse: %p\n", (void *) argparse);
 
     argparse_free(argparse);
 
