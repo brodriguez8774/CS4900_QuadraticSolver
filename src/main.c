@@ -1,6 +1,12 @@
 /**
  * CS 4900
  * Quadratic Equation Solver
+ * 2018-09-17
+ *
+ * Authors:
+ *  Steven H Johnson
+ *  Brandon Rodriguez
+ *  Joshua Sziede
  */
 
 
@@ -21,6 +27,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "argparse.h"
+#include "helper.h"
 
 
 // Constant Defines.
@@ -43,6 +52,8 @@ void exit_program();
 int main(int argc, char* argv[]) {
     printf("\n");
 
+    ARGPARSE *argparse = argparse_new();
+
     if (argc == 1) {
         // No args provided. Display help.
         display_help_text();
@@ -52,17 +63,14 @@ int main(int argc, char* argv[]) {
         // Handling for -h (help) arg.
         if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
             display_help_text();
-            exit_program(0);
         } else {
             // No other commands supported yet. Display warning and close.
             display_invalid_arg_text();
-            exit_program(0);
         }
 
     } else if (argc == 3) {
         // Two args provided. Display warning and close.
         display_invalid_arg_text();
-        exit_program(0);
     } else if (argc == 4) {
         // Three args provided.
         int a = atoi(argv[1]);
@@ -78,13 +86,15 @@ int main(int argc, char* argv[]) {
         } else {
             // At least one of a, b, or c is non-zero. Execute solver.
             run_quad_solver(a, b, c);
-            exit_program(0);
         }
     } else {
         // Four or more args provided. Display warning and close.
         display_invalid_arg_text();
-        exit_program(0);
     }
+
+    printf("argparse: %p\n", (void *) argparse);
+
+    argparse_free(argparse);
 
     exit_program(0);
 }
