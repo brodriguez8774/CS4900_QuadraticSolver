@@ -165,7 +165,7 @@ void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
     }
 
     if (argparse->epilogue) {
-        printf("%s\n", argparse->epilogue);
+        printf("\n%s\n", argparse->epilogue);
     }
 }
 
