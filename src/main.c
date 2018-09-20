@@ -89,14 +89,14 @@ int main(int argc, char* argv[]) {
         printf("Debug Mode: %d\n", debug_mode);
 
         // Three args provided.
-        int a = atoi(string_a);
-        int b = atoi(string_b);
-        int c = atoi(string_c);
+        double a = strtod(string_a, NULL);
+        double b = strtod(string_b, NULL);
+        double c = strtod(string_c, NULL);
 
         // Check for valid args.
-        if ((a == 0) && (b == 0) && (c == 0)) {
+        if (a == 0) {
             // Invalid args provided. Exiting.
-            printf("Recieved %dx^2 + %dx + %d. Invalid equation.\n", a, b, c);
+            printf("Recieved %fx^2 + %fx + %f. Invalid equation, A can't be zero.\n", a, b, c);
             printf("Note that non-integer values are parsed as \"0\".\n");
             printf("Please try again.\n");
         } else {
@@ -113,8 +113,8 @@ int main(int argc, char* argv[]) {
 /**
  * Runs the quad solver program.
  */
-void run_quad_solver(int a, int b, int c) {
-    printf("Calculating %dx^2 + %dx + %d.\n", a, b, c);
+void run_quad_solver(double a, double b, double c) {
+    printf("Calculating %fx^2 + %fx + %f.\n", a, b, c);
 }
 
 /**
