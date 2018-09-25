@@ -8,5 +8,5 @@ At minimum, we will have the following directories:
     * Documents - Holds project standards and other documents.
     * Spikes - Holds spikes.
     * src - Holds source code.
-    * Stoires - Holdes user stories.
+    * Stories - Holds user stories.
     * Tests - Holds unit tests.
