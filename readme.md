@@ -28,3 +28,5 @@ Then to build and run valgrind on the executable, run:
     $ make valgrind
 
 Valgrind will report pointers that were allocated but not freed.
+
+TODO: Add GPLv3 license to repo.
