@@ -4,5 +4,9 @@ a.out
 quad_solver
 *.o
 
+# Ignore spike compiled files.
+spikes/std_in/arg_parse
+spikes/std_in/simple_parse
+
 # Ignore vscode files
 .vscode
