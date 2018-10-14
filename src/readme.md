@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver - Src Folder
+# C - Quadratic Solver > Src
 
 ## Description
 Project source code goes here.

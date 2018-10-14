@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver - Tests Folder
+# C - Quadratic Solver > Tests
 
 ## Description
 Unit tests go here.

@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver - Documents Folder
+# C - Quadratic Solver > Documents
 
 ## Description
 Project documents and standards files go here.

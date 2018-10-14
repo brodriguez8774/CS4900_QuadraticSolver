@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver - Stories Folder
+# C - Quadratic Solver > Stories
 
 ## Description
 Project stories go here.
