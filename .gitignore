@@ -7,6 +7,7 @@ quad_solver
 # Ignore spike compiled files.
 spikes/std_in/arg_parse
 spikes/std_in/simple_parse
+spikes/ieee_floating_point/float
 
 # Ignore vscode files
 .vscode
