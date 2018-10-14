@@ -6,7 +6,7 @@
 
 /**
  * Description:
- *  Spike to test simplistic handling of std in.
+ *  Spike to test simplistic handling of argv.
  */
 
 

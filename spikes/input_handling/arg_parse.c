@@ -6,7 +6,7 @@
 
 /**
  * Description:
- *  Spike to test handling std in with full Arg Parse.
+ *  Spike to test handling argv with full Arg Parse.
  */
 
 
