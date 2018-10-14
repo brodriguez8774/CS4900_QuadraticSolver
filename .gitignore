@@ -6,6 +6,7 @@ quad_solver
 
 # Ignore spike compiled files.
 spikes/ieee_floating_point/float
+spikes/ieee_floating_point/sandbox/sandbox
 spikes/input_handling/arg_parse
 spikes/input_handling/simple_parse
 spikes/input_handling/std_in
