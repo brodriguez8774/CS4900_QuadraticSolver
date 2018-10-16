@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver > Spikes > IEEE Floading Point
+# C - Quadratic Solver > Spikes > IEEE Floating Point
 
 ## Description
 Spikes specific to IEEE Floating Point manipulation.

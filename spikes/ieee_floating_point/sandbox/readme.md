@@ -1,5 +1,7 @@
-QuadSolver
 
+# C - Quadratic Solver > Spikes > IEEE Floating Point > Sandbox
+
+## Description
 This sandbox folder is to test out how IEEE works.
 
 I learned that the significand in binary is literally the binary follow "1."
@@ -7,7 +9,7 @@ for a normalized float. I also learned that my computer is little endian and
 that is how the floats are in memory. (They typically match whatever ints use)
 -Steven
 
-Directions:
+## Directions
 
 In this folder run:
 
@@ -17,7 +19,7 @@ Now run and give a float:
 
 $ ./sandbox FLOAT
 
-Example:
+## Example
 
 $ ./sandbox 5
 Interpreted 5.000000
