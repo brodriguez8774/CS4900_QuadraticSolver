@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include "sandbox.h"
 
 /* print_byte based from https://stackoverflow.com/a/19885112 */
 const char *bit_rep[16] = {
@@ -48,22 +47,4 @@ void debug_print_ieee_float(const void *number) {
     printf("Signifcand:  %s\n", significand_string);
     printf("=-1^(%d) x (1 + 0.%s) x 2^(%d)\n", sign, significand_string, biased_exp - 127);
     printf("bits: %s\n", make_bytes_string(sizeof(int), number));
-}
-
-int main(int argc, char **argv) {
-    float number = 1/3.0;
-    if (argc == 2) {
-        number = atof(argv[1]);
-        printf("Interpreted %f\n", number);
-    }
-
-    printf("Size of float: %ld\n", sizeof(float));
-    printf("Size of short: %ld\n", sizeof(short));
-    printf("Size of int:   %ld\n", sizeof(int));
-    printf("Size of long:  %ld\n", sizeof(long));
-
-    debug_print_ieee_float(&number);
-    printf("\nNow doing inverse...\n");
-    number = -number;
-    debug_print_ieee_float(&number);
 }

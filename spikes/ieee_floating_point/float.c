@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+#include "./sandbox/sandbox.h"
 
 #define BUFF 50	//maximum number of characters to store from stdin
 
@@ -60,6 +61,8 @@ int main(int argc, char* argv[]) {
 	printf("\nFirst of all, here are some fun facts on how your machine handles floating point numbers!\nMax value of floats: %f\nMin value of positive floats: %f\nRounding method: %s\nMantissa precision: %i bits\n", FLT_MAX, FLT_MIN, floatRound, FLT_MANT_DIG);
 
 	printf("\nYour input number as a float: %f\nRounding error: %lf\n", number, roundError);
+
+	debug_print_ieee_float(&numberPrecise);
 	/*to be continued ======
 	* get values of mantissa, exponent, and sign.
 	* check if user inputs string numbers such as Nan, inf, etc.

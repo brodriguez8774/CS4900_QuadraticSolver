@@ -1,4 +1,4 @@
-TARGET = float
+TARGET = float 
 LIBS = -lm
 CC = gcc
 CFLAGS = -Wall -pedantic -std=gnu99 -g
@@ -23,7 +23,7 @@ $(TARGET): $(OBJECTS)
 
 # Remove older builds
 clean:
-	-rm -f *.o
+	-rm -f $(OBJECTS)
 	-rm -f $(TARGET)
 
 # Update time of modification
