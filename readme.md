@@ -29,4 +29,4 @@ Then to build and run valgrind on the executable, run:
 
 Valgrind will report pointers that were allocated but not freed.
 
-TODO: Add GPLv3 license to repo.
+TODO: Finish writing the source files in the src directory.
