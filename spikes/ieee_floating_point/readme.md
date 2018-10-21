@@ -15,7 +15,7 @@ To compile float.c:
 
 To run the program after compilation:
 
-`$make <float>`
+`$./float <float>`
 
 where `<float>` is any number. Alternatively, using
 
