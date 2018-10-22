@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
 	if(argc < 2) {	//if no number was provided as an arg
 		printf("Enter a number to see its floating point format:\nNote - keywords such as \"infinity\" and \"NaN\" are also acceptable.\n");
-		
+
 		char valid = '0';	//determines whether or not number has a proper value
 		char buffer[BUFF];	//stores the user input from stdin
 
@@ -55,12 +55,12 @@ int main(int argc, char* argv[]) {
 		floatRound = "(2) Towards positive infinity";
 	} else if (FLT_ROUNDS == 3) {
 		floatRound = "(3) Towards negative infinity";
-	} 
+	}
 
 	//who doesn't love fun facts?
 	printf("\nFirst of all, here are some fun facts on how your machine handles floating point numbers!\nMax value of floats: %f\nMin value of positive floats: %f\nRounding method: %s\nMantissa precision: %i bits\n", FLT_MAX, FLT_MIN, floatRound, FLT_MANT_DIG);
 
 	printf("\nYour input number as a float: %f\nRounding error: %lf\n", number, roundError);
 
-	debug_print_ieee_float(&numberPrecise);
+	debug_print_ieee_float(&number);
 }
