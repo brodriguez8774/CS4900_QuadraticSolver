@@ -1,13 +1,14 @@
 /**
 * CS 4900
 * IEEE Floating Point Spike
-* Author: Joshua Sziede
+* Authors:	Steven Johnson,
+			Joshua Sziede
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
-#include "./sandbox/sandbox.h"
+#include "./sandbox.h"
 
 #define BUFF 50	//maximum number of characters to store from stdin
 
