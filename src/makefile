@@ -10,18 +10,18 @@ CFLAGS = -Wall -pedantic -std=c99 -g
 default: $(TARGET)
 all: default
 
-# Expect a .o for each .c file in the directory
-OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
-# Get all .h files in the directory
-HEADERS = $(wildcard *.h)
+# Link given dependencies into binary named TARGET
+# $^ will be replaced with 'main.o argparse.o ...'
+$(TARGET): main.o argparse.o helper.o prompt.o
+	${CC} -o $(TARGET) $^ $(LIBS)
 
-%.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+main.o: main.c argparse.h helper.h prompt.h
 
-.PRECIOUS: $(TARGET) $(OBJECTS)
+argparse.o: argparse.c argparse.h helper.h
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
+helper.o: helper.c helper.h
+
+prompt.o: prompt.c prompt.h helper.h
 
 clean:
 	-rm -f *.o

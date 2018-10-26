@@ -30,6 +30,7 @@
 
 #include "argparse.h"
 #include "helper.h"
+#include "prompt.h"
 
 
 // Constant Defines.
@@ -49,6 +50,11 @@ void exit_program();
  */
 int main(int argc, char* argv[]) {
     printf("\n");
+
+    // TODO: Only ask if not provided in args.
+    char *input_string = prompt_user("Please enter A B C.", NULL, 10);
+    printf("Got: '%s'\n", input_string);
+    free(input_string);
 
     ARGPARSE *argparse = argparse_new(
         "Quadratic Equation Solver",
