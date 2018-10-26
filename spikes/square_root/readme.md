@@ -1,5 +1,5 @@
 
-# C - Quadratic Solver > Spikes > IEEE Floating Point
+# C - Quadratic Solver > Spikes > Square Root
 
 ## Description
 Spikes specific to the square root function from the Math library.
