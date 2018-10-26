@@ -1,12 +1,12 @@
 /**
  * CS 4900
- * Log to File spike.
+ * Log with Function spike.
  */
 
 
 /**
  * Description:
- *  Spike to test basic logging to file.
+ *  Spike to test basic logging to file using function-based logging.
  */
 
 

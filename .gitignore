@@ -10,7 +10,8 @@ spikes/ieee_floating_point/sandbox/sandbox
 spikes/input_handling/arg_parse
 spikes/input_handling/simple_parse
 spikes/input_handling/std_in
-spikes/logging/log_to_file
+spikes/logging/log_with_function
+spikes/logging/log_with_macro
 spikes/logging/log_file.txt
 spikes/make/read_from_file
 
