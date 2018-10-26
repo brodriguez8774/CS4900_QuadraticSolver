@@ -32,15 +32,19 @@ Results of square rooting 4562.736600:
 Expected square root:	67.548032
 Floated square root:	67.548035
 Difference:		-0.000003
+
 Results of square rooting with floated input:
 Expected square root:	67.548035
 Floated square root:	67.548035
 Difference:		0.000000
+
 Now doing the inverse.
+
 Results of square rooting -4562.736600:
 Expected square root:	-nan
 Floated square root:	-nan
 Difference:		-nan
+
 Results of square rooting with floated input:
 Expected square root:	-nan
 Floated square root:	-nan
@@ -53,15 +57,19 @@ Results of square rooting -23.000000:
 Expected square root:	-nan
 Floated square root:	-nan
 Difference:		-nan
+
 Results of square rooting with floated input:
 Expected square root:	-nan
 Floated square root:	-nan
 Difference:		-nan
+
 Now doing the inverse.
+
 Results of square rooting 23.000000:
 Expected square root:	4.795832
 Floated square root:	4.795832
 Difference:		-0.000000
+
 Results of square rooting with floated input:
 Expected square root:	4.795832
 Floated square root:	4.795832
@@ -74,15 +82,19 @@ Results of square rooting 0.000000:
 Expected square root:	0.000000
 Floated square root:	0.000000
 Difference:		0.000000
+
 Results of square rooting with floated input:
 Expected square root:	0.000000
 Floated square root:	0.000000
 Difference:		0.000000
+
 Now doing the inverse.
+
 Results of square rooting -0.000000:
 Expected square root:	-0.000000
 Floated square root:	-0.000000
 Difference:		0.000000
+
 Results of square rooting with floated input:
 Expected square root:	-0.000000
 Floated square root:	-0.000000
@@ -95,15 +107,19 @@ Results of square rooting inf:
 Expected square root:	inf
 Floated square root:	inf
 Difference:		-nan
+
 Results of square rooting with floated input:
 Expected square root:	inf
 Floated square root:	inf
 Difference:		-nan
+
 Now doing the inverse.
+
 Results of square rooting -inf:
 Expected square root:	-nan
 Floated square root:	-nan
 Difference:		-nan
+
 Results of square rooting with floated input:
 Expected square root:	-nan
 Floated square root:	-nan
@@ -116,15 +132,19 @@ Results of square rooting nan:
 Expected square root:	nan
 Floated square root:	nan
 Difference:		nan
+
 Results of square rooting with floated input:
 Expected square root:	nan
 Floated square root:	nan
 Difference:		nan
+
 Now doing the inverse.
+
 Results of square rooting -nan:
 Expected square root:	-nan
 Floated square root:	-nan
 Difference:		-nan
+
 Results of square rooting with floated input:
 Expected square root:	-nan
 Floated square root:	-nan
