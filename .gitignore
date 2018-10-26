@@ -17,3 +17,8 @@ spikes/make/read_from_file
 
 # Ignore vscode files
 .vscode
+
+# Ignore project logging files.
+src/log/error.txt
+src/log/info.txt
+src/log/warn.txt
