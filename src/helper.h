@@ -35,6 +35,12 @@ void code_error_quit(const char *message);
         __FILE__, __LINE__, __func__, log_text \
     ); \
     fclose(log_file); \
+\
+    printf("INFO [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
 }
 
 
@@ -49,6 +55,14 @@ void code_error_quit(const char *message);
     time ( &rawtime ); \
     timeinfo = localtime ( &rawtime ); \
 \
+    log_file = fopen("log/info.txt", "a+"); \
+    fprintf(log_file, "WARN [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
+    fclose(log_file); \
+\
     log_file = fopen("log/warn.txt", "a+"); \
     fprintf(log_file, "WARN [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
@@ -57,7 +71,11 @@ void code_error_quit(const char *message);
     ); \
     fclose(log_file); \
 \
-    log_info(log_text); \
+    printf("WARN [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
 }
 
 
@@ -72,6 +90,22 @@ void code_error_quit(const char *message);
     time ( &rawtime ); \
     timeinfo = localtime ( &rawtime ); \
 \
+    log_file = fopen("log/info.txt", "a+"); \
+    fprintf(log_file, "ERR [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
+    fclose(log_file); \
+\
+    log_file = fopen("log/warn.txt", "a+"); \
+    fprintf(log_file, "ERR [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
+    fclose(log_file); \
+\
     log_file = fopen("log/error.txt", "a+"); \
     fprintf(log_file, "ERR [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
@@ -80,5 +114,9 @@ void code_error_quit(const char *message);
     ); \
     fclose(log_file); \
 \
-    log_warn(log_text); \
+    printf("ERR [%d-%d-%d %d:%d:%d] %s %d (%s): %s\n", \
+        timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, \
+        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, \
+        __FILE__, __LINE__, __func__, log_text \
+    ); \
 }
