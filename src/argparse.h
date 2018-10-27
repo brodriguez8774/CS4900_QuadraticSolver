@@ -8,12 +8,12 @@ typedef size_t ARGKEY;
 typedef struct {
     unsigned char set; // boolean
     unsigned char optional;
-    // TODO: handle if argument has data after it (e.g. '--max-size 7')
-    //size_t nargs; // number of arguments immediately after this argument
+    size_t nargs; // number of arguments immediately after this argument
     const char *text;
     const char *flag;
     const char *help;
     const char *value; // value after parsing
+    const char **values; // if nargs > 1, array of values
 } ARGUMENT;
 
 typedef struct {
@@ -31,8 +31,8 @@ void argparse_free(ARGPARSE *argparse);
 
 ARGKEY argparse_add_argument(
         ARGPARSE *argparse, const char *text, const char *flag,
-        const char *help);
-char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value);
+        const char *help, size_t nargs);
+char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value, const char ***values);
 
 char argparse_parse(ARGPARSE *argparse, int argc, char **argv);
 

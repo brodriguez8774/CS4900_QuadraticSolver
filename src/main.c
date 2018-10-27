@@ -51,11 +51,6 @@ void exit_program();
 int main(int argc, char* argv[]) {
     printf("\n");
 
-    // TODO: Only ask if not provided in args.
-    char *input_string = prompt_user("Please enter A B C.", NULL, 10);
-    printf("Got: '%s'\n", input_string);
-    free(input_string);
-
     ARGPARSE *argparse = argparse_new(
         "Quadratic Equation Solver",
         "  This program solves quadratic equations.\n"
@@ -67,37 +62,46 @@ int main(int argc, char* argv[]) {
         "            where n is any number of digits.\n"
         "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
         "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
-        4);
+        5);
 
-    // Expecting three positional arguments.
-    ARGKEY arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
-    ARGKEY arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
-    ARGKEY arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
+    // logging option
+    ARGKEY arg_logging = argparse_add_argument(
+        argparse, "--log", "-l", "Enable logging mode.", 0);
+    char logging_mode = 0; // TODO: Use this logging flag in our code
 
-    // debug option
-    ARGKEY arg_debug = argparse_add_argument(
-        argparse, "--debug", "-d", "Enable debug mode.");
-    char debug_mode = 0; // TODO: Use this debug flag in our code?
+    // test input 3 numbers with flag
+    ARGKEY arg_nums = argparse_add_argument(
+        argparse, "--nums", "-n", "Accepts three numbers 'A B C'. See NUM_FORMAT", 3);
+    char nums_set = 0;
 
     char parse_errors = argparse_parse(argparse, argc, argv);
     if (parse_errors == 0) {
-        const char *string_a = NULL;
-        const char *string_b = NULL;
-        const char *string_c = NULL;
+        const char **string_nums = NULL;
 
-        argparse_get_argument(argparse, arg_a, &string_a);
-        argparse_get_argument(argparse, arg_b, &string_b);
-        argparse_get_argument(argparse, arg_c, &string_c);
+        nums_set = argparse_get_argument(argparse, arg_nums, NULL, &string_nums);
+        logging_mode = argparse_get_argument(argparse, arg_logging, NULL, NULL);
 
-        debug_mode = argparse_get_argument(argparse, arg_debug, NULL);
+        if (logging_mode) {
+            printf("TODO: Do logging!\n");
+        }
 
-        printf("A: %s\nB: %s\nC: %s\n", string_a, string_b, string_c);
-        printf("Debug Mode: %d\n", debug_mode);
+        double a = 0;
+        double b = 0;
+        double c = 0;
 
-        // Three args provided.
-        double a = strtod(string_a, NULL);
-        double b = strtod(string_b, NULL);
-        double c = strtod(string_c, NULL);
+        if (nums_set) {
+            printf("A: %s\nB: %s\nC: %s\n", string_nums[0], string_nums[1], string_nums[2]);
+
+            // Three args provided.
+            a = strtod(string_nums[0], NULL);
+            b = strtod(string_nums[1], NULL);
+            c = strtod(string_nums[2], NULL);
+        } else {
+            char *input_string = prompt_user("Please enter A B C.", NULL, 255);
+            printf("Got: '%s'\n", input_string);
+            // TODO: Parse input_string into a, b, c
+            free(input_string);
+        }
 
         // Check for valid args.
         if (a == 0) {

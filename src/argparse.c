@@ -41,7 +41,7 @@ ARGPARSE *argparse_new(
     }
 
     argparse->arg_help = argparse_add_argument(
-        argparse, "--help", "-h", "Show this help text");
+        argparse, "--help", "-h", "Show this help text", 0);
 
     return argparse;
 }
@@ -52,6 +52,9 @@ ARGPARSE *argparse_new(
 void argparse_free(ARGPARSE *argparse) {
     // free each argument
     for (size_t i = 0; i < argparse->arguments_size; ++i) {
+        if (argparse->arguments[i]->values) {
+            free(argparse->arguments[i]->values);
+        }
         free(argparse->arguments[i]);
     }
 
@@ -76,7 +79,7 @@ void argparse_free(ARGPARSE *argparse) {
  */
 ARGKEY argparse_add_argument(
         ARGPARSE *argparse, const char *text, const char *flag,
-        const char *help) {
+        const char *help, size_t nargs) {
     if (argparse->arguments_length >= argparse->arguments_size) {
         // Not enough room to add another argument
         code_error_quit("arguments array size exceeded");
@@ -88,10 +91,12 @@ ARGKEY argparse_add_argument(
 
     ARGUMENT *argument = argparse->arguments[index];
     argument->optional = 0;
+    argument->nargs = nargs;
     argument->text = text;
     argument->flag = flag;
     argument->help = help;
     argument->value = NULL;
+    argument->values = NULL;
     argument->set = 0;
 
     if (flag != NULL || strncmp(text, "--", 2) == 0) {
@@ -104,17 +109,22 @@ ARGKEY argparse_add_argument(
 /**
  * Get whether the argument matching the given key was provided.
  *
- * Positional arguments will have strings stored in the pointer given by value
- * if value is not NULL.
+ * Positional arguments or nargs == 1 will have strings stored in the pointer
+ * given by value if value is not NULL.
+ * 
+ * Arguments with nargs > 1 will have an array of strings stored in the pointer
+ * given by values if values is not NULL.
  *
  * Returns 1 if argument was given, and 0 if not.
  */
-char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value) {
+char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value, const char ***values) {
     if (key < 0 || key >= argparse->arguments_length) {
         code_error_quit("invalid key");
     }
 
-    if (value) {
+    if (argparse->arguments[key]->nargs > 1 && values) {
+        *values = argparse->arguments[key]->values;
+    } else if (value) {
         *value = argparse->arguments[key]->value;
     }
 
@@ -126,7 +136,7 @@ char argparse_get_argument(ARGPARSE *argparse, ARGKEY key, const char **value) {
  */
 void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
     ARGUMENT *argument = NULL;
-    short x, i;
+    short x, i, j;
 
     if (argparse->prologue) {
         printf("%s\n\n", argparse->prologue);
@@ -150,12 +160,16 @@ void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
     // Print out each arguments help text
     for (i = 0; i < argparse->arguments_length; ++i) {
         argument = argparse->arguments[i];
-        x = printf("   ");
+        printf("   ");
         if (argument->flag) {
-            x += printf("%s, ", argument->flag);
+            printf("%s, ", argument->flag);
         }
-        x += printf("%s", argument->text);
-        for (; x < DESCRIPTION_OFFSET;) {
+        printf("%s ", argument->text);
+        for (j = 0; j < argument->nargs; ++j) {
+            printf("VALUE ");
+        }
+        printf("\n");
+        for (x = 0; x < DESCRIPTION_OFFSET;) {
             x += printf(" ");
         }
         if (argument->help) {
@@ -180,7 +194,7 @@ void argparse_print_help(ARGPARSE *argparse, const char *arg0) {
 char argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
     // Count how many args we require at a minimum
     int require = 1; // Always require the first argument (program name)
-    short i, j;
+    short i, j, k;
     ARGUMENT *argument = NULL;
     for (i = 0; i < argparse->arguments_length; ++i) {
         argument = argparse->arguments[i];
@@ -201,13 +215,35 @@ char argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
 
             for (j = 0; j < argparse->arguments_length; ++j) {
                 argument = argparse->arguments[j];
-                if (argument->value || argument->set) {
+                if (argument->set) {
                     continue; // already processed
                 } else if (argument->flag && (
                     strncmp(value, argument->flag, 2) == 0 ||
                     strcmp(value, argument->text) == 0)
                 ) {
-                    // No value to get
+                    if (argument->nargs > 0) {
+                        // Need to process more arguments
+                        if (i + argument->nargs >= argc) {
+                            // Required values not given!
+                            argparse_print_help(argparse, argv[0]);
+                            return 1;
+                        }
+
+                        if (argument->nargs == 1) {
+                            // Just need to get one value
+                            argument->value = argv[++i];
+                        } else {
+                            // Need to get an array of values
+                            argument->values = calloc_or_quit(argument->nargs, sizeof (char*));
+                            for (k = 1; k <= argument->nargs; ++k) {
+                                argument->values[k-1] = argv[i + k];
+                            }
+
+                            // Don't process the values again
+                            i += argument->nargs;
+                        }
+                    }
+                    
                     argument->set = 1;
                     break;
                 } else if (argument->optional == 0) {
@@ -219,10 +255,20 @@ char argparse_parse(ARGPARSE *argparse, int argc, char **argv) {
         }
     }
 
-    if (argparse_get_argument(argparse, argparse->arg_help, NULL)) {
+    if (argparse_get_argument(argparse, argparse->arg_help, NULL, NULL)) {
         // print help and quit
         argparse_print_help(argparse, argv[0]);
         return 1;
+    }
+
+    // Verify positional arguments are given since they are not optional
+    for (i = 0; i < argparse->arguments_length; ++i) {
+        argument = argparse->arguments[i];
+        if (argument->optional == 0 && argument->set != 1) {
+            // print help and quit
+            argparse_print_help(argparse, argv[0]);
+            return 1;
+        }
     }
 
     return 0;

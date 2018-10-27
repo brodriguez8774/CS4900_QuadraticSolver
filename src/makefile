@@ -28,4 +28,4 @@ clean:
 	-rm -f $(TARGET)
 
 valgrind: $(TARGET)
-	valgrind --leak-check=full --show-reachable=yes ./$(TARGET) 2 4 8
+	valgrind --leak-check=full --show-reachable=yes ./$(TARGET) -n 2 4 8
