@@ -105,11 +105,6 @@ int main(int argc, char* argv[]) {
             free(input_string);
         }
 
-
-        a = -2;
-        b = 4;
-        c = 0;
-
         // Check for valid args.
         if (a == 0) {
             // Invalid args provided. Exiting.
