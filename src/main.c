@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <fenv.h>
 
 #include "argparse.h"
 #include "helper.h"
@@ -34,7 +36,7 @@
 
 
 // Constant Defines.
-
+#define MAX_ANSWER_LENGTH 30	//the maximum number of characters that can be used to store the answers of the quadratic equation
 
 // Global Variable Declaration.
 
@@ -103,6 +105,11 @@ int main(int argc, char* argv[]) {
             free(input_string);
         }
 
+
+        a = -2;
+        b = 4;
+        c = 0;
+
         // Check for valid args.
         if (a == 0) {
             // Invalid args provided. Exiting.
@@ -121,10 +128,58 @@ int main(int argc, char* argv[]) {
 }
 
 /**
- * Runs the quad solver program.
+ * Runs the quad solver equation and outputs results.
  */
 void run_quad_solver(double a, double b, double c) {
     printf("Calculating %fx^2 + %fx + %f.\n", a, b, c);
+
+    //used to store the results of the quadratic solver as a string because the answer may not always be a number
+    char *x_plus_to_string = calloc_or_quit(MAX_ANSWER_LENGTH, 1);
+    char *x_minus_to_string = calloc_or_quit(MAX_ANSWER_LENGTH, 1);
+
+    //stores a simple yes or no depending on if a rounding error was determined
+    char *x_plus_rounding_error = calloc_or_quit(4, 1);
+    x_plus_rounding_error = "No\0";
+    char *x_minus_rounding_error = calloc_or_quit(4, 1);
+    x_minus_rounding_error = "No\0";
+
+    //remove any possible lingering floating point exceptions
+    feclearexcept(FE_ALL_EXCEPT);
+
+    //determines the value of x1 using the quadratic formula
+    float x_plus = (((-1 * b) + sqrt((b * b) - (4 * a * c))) / (2 * a));
+
+    //if rounding error detected while calculating x1
+	if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
+		x_plus_rounding_error = "Yes\0";
+	}
+
+    //if x1 is imaginary
+    if (isnan(x_plus)) {
+    	x_plus_to_string = "Imaginary\0";
+    } else { //else convert float to string
+    	sprintf(x_plus_to_string, "%f", x_plus);
+    }
+
+    //remove any possible lingering floating point exceptions
+    feclearexcept(FE_ALL_EXCEPT);
+
+    //determines the value of x2 using the quadratic formula
+    float x_minus = (((-1 * b) - sqrt((b * b) - (4 * a * c))) / (2 * a));
+
+    //if rounding error detected while calculating x2
+	if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
+		x_minus_rounding_error = "Yes\0";
+	}
+
+    //if x2 is imaginary
+    if (isnan(x_minus)) {
+    	x_minus_to_string = "Imaginary\0";
+    } else { //else convert float to string
+    	sprintf(x_minus_to_string, "%f", x_minus);
+    }
+
+    printf("Results:\n\tX1: %s\n\tPossible rounding error: %s\n\n\tX2: %s\n\tPossible rounding error: %s\n", x_plus_to_string, x_plus_rounding_error, x_minus_to_string, x_minus_rounding_error);
 }
 
 /**
