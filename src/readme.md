@@ -50,7 +50,7 @@ Answer:
 Exiting program with code of 0.
 ```
 
-##TODO
+## TODO
 Mention the program arguments in the readme.
 Finish the string to double parsing for the input values.
 Add logging functionality for when logging mode is enabled.
