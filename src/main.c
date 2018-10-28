@@ -44,6 +44,7 @@
 // Method Declaration.
 void run_quad_solver();
 void exit_program();
+char parse_doubles(const char *string, double *a, double *b, double *c);
 
 
 /**
@@ -92,18 +93,20 @@ int main(int argc, char* argv[]) {
         double c = 0;
 
         if (nums_set) {
-            printf("A: %s\nB: %s\nC: %s\n", string_nums[0], string_nums[1], string_nums[2]);
-
-            // Three args provided.
+            // Three args A B C provided.
             a = strtod(string_nums[0], NULL);
             b = strtod(string_nums[1], NULL);
             c = strtod(string_nums[2], NULL);
         } else {
+            // Need to prompt for A B C
             char *input_string = prompt_user("Please enter A B C.", NULL, 255);
-            printf("Got: '%s'\n", input_string);
-            // TODO: Parse input_string into a, b, c
+            if (parse_doubles(input_string, &a, &b, &c) != 0) {
+                fprintf(stderr, "Unexpected number format. Please use 'A B C'\n");
+                exit(1);
+            }
             free(input_string);
         }
+        printf("Received floats:\nA: %f\nB: %f\nC: %f\n", a, b, c);
 
         // Check for valid args.
         if (a == 0) {
@@ -175,6 +178,54 @@ void run_quad_solver(double a, double b, double c) {
     }
 
     printf("Results:\n\tX1: %s\n\tPossible rounding error: %s\n\n\tX2: %s\n\tPossible rounding error: %s\n", x_plus_to_string, x_plus_rounding_error, x_minus_to_string, x_minus_rounding_error);
+}
+
+/**
+ * Convert a string in the form "A B C" to doubles. Whitespace is ignored.
+ *
+ * Returns 0 if no error, 1 if error.
+ */
+char parse_doubles(const char *string, double *a, double *b, double *c) {
+    char *token = calloc_or_quit(MAX_ANSWER_LENGTH+1, 1);
+    char x = '\0';
+    size_t i = 0;
+    size_t offset = 0;
+    char count = 0; // to keep track which double to set
+    double value = 0;
+
+    for (i = 0; i < strlen(string); ++i) {
+        x = string[i];
+        if (x == ' ' || x == '\0' || x == '\n' || x == '\t') {
+            // We found a full token
+            if (i - offset > MAX_ANSWER_LENGTH) {
+                return 1; // Too long to parse
+            } else if (i - offset == 0) {
+                // Extra whitespace should just be ignored
+                ++offset;
+                continue;
+            }
+            strncpy(token, string + offset, i - offset);
+            token[i - offset] = '\0'; // NULL terminate the string
+            offset = i + 1; // reset offset for next token
+            value = strtod(token, NULL);
+            if (count == 0) {
+                *a = value;
+            } else if (count == 1) {
+                *b = value;
+            } else if (count == 2) {
+                *c = value;
+            } else {
+                return 1; // Too many numbers returned
+            }
+            ++count;
+        }
+    }
+
+    if (count != 3) {
+        return 1; // Not enough doubles parsed
+    }
+
+    return 0;
 }
 
 /**
