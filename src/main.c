@@ -17,16 +17,10 @@
 
 
 // Import headers.
-#include <math.h>
-#include <fenv.h>
-
 #include "argparse.h"
+#include "compute.h"
 #include "helper.h"
 #include "prompt.h"
-
-
-// Constant Defines.
-#define MAX_ANSWER_LENGTH 30	//the maximum number of characters that can be used to store the answers of the quadratic equation
 
 
 // Method Declaration.
@@ -118,70 +112,20 @@ int main(int argc, char* argv[]) {
  * Runs the quad solver equation and outputs results.
  */
 void run_quad_solver(double a, double b, double c) {
-    int plus_string_needs_free = 0;
-    int minus_string_needs_free = 0;
-    float x_plus;
-    float x_minus;
-    char *x_plus_to_string;
-    char *x_minus_to_string;
-    char *x_plus_rounding_error;
-    char *x_minus_rounding_error;
+    COMPUTATION_STRUCT *x_plus_struct;
+    COMPUTATION_STRUCT *x_minus_struct;
 
     printf("Calculating %fx^2 + %fx + %f.\n", a, b, c);
 
-    //stores a simple yes or no depending on if a rounding error was determined
-    x_plus_rounding_error = "No\0";
-    x_minus_rounding_error = "No\0";
+    x_plus_struct = calculate_x_plus(a, b, c);
+    x_minus_struct = calculate_x_minus(a, b, c);
 
-    //remove any possible lingering floating point exceptions
-    feclearexcept(FE_ALL_EXCEPT);
+    printf("Results:\n\tX1: %s\n\tPossible rounding error: %s\n\n\tX2: %s\n\tPossible rounding error: %s\n",
+        x_plus_struct->x_as_string, x_plus_struct->rounding_error_display,
+        x_minus_struct->x_as_string, x_minus_struct->rounding_error_display);
 
-    //determines the value of x1 using the quadratic formula
-    x_plus = (((-1 * b) + sqrt((b * b) - (4 * a * c))) / (2 * a));
-
-    //if rounding error detected while calculating x1
-	if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
-		x_plus_rounding_error = "Yes\0";
-	}
-
-    //if x1 is imaginary
-    if (isnan(x_plus)) {
-    	x_plus_to_string = "Imaginary\0";
-    } else { //else convert float to string
-        plus_string_needs_free = 1;
-        x_plus_to_string = calloc_or_quit(MAX_ANSWER_LENGTH, sizeof(char*));
-    	sprintf(x_plus_to_string, "%f", x_plus);
-    }
-
-    //remove any possible lingering floating point exceptions
-    feclearexcept(FE_ALL_EXCEPT);
-
-    //determines the value of x2 using the quadratic formula
-    x_minus = (((-1 * b) - sqrt((b * b) - (4 * a * c))) / (2 * a));
-
-    //if rounding error detected while calculating x2
-	if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
-		x_minus_rounding_error = "Yes\0";
-	}
-
-    //if x2 is imaginary
-    if (isnan(x_minus)) {
-    	x_minus_to_string = "Imaginary\0";
-    } else { //else convert float to string
-        minus_string_needs_free = 1;
-        x_minus_to_string = calloc_or_quit(MAX_ANSWER_LENGTH, sizeof(char*));
-    	sprintf(x_minus_to_string, "%f", x_minus);
-    }
-
-    printf("Results:\n\tX1: %s\n\tPossible rounding error: %s\n\n\tX2: %s\n\tPossible rounding error: %s\n", x_plus_to_string, x_plus_rounding_error, x_minus_to_string, x_minus_rounding_error);
-
-    // Free x plus and minus to string values, if necessary.
-    if (plus_string_needs_free) {
-        free(x_plus_to_string);
-    }
-    if (minus_string_needs_free) {
-        free(x_minus_to_string);
-    }
+    computation_struct_free(x_plus_struct);
+    computation_struct_free(x_minus_struct);
 }
 
 
