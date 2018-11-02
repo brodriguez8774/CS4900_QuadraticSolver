@@ -1,6 +1,14 @@
+/**
+ * CS 4900
+ * Header file for argument parse handling.
+ */
+
+
+// Import headers.
 #ifndef _ARGPARSE_H
 #define _ARGPARSE_H
 #include <stdlib.h>
+
 
 // Encapsulate away the key type
 typedef size_t ARGKEY;
@@ -26,6 +34,8 @@ typedef struct {
     ARGUMENT **arguments;
 } ARGPARSE;
 
+
+// Function Prototypes.
 ARGPARSE *argparse_new(const char *prologue, const char *description, const char *epilogue, size_t num_args);
 void argparse_free(ARGPARSE *argparse);
 

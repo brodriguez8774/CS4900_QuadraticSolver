@@ -5,11 +5,14 @@
 
 
 // Import headers.
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#ifndef quad_solver_core_imports
+    #define quad_solver_core_imports
+    #include <ctype.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <time.h>
+#endif
 
 
 // Function Prototypes.

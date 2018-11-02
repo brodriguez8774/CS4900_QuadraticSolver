@@ -16,17 +16,7 @@
  */
 
 
-/**
- * Known Issues:
- *
- */
-
-
 // Import headers.
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <fenv.h>
 
@@ -37,8 +27,6 @@
 
 // Constant Defines.
 #define MAX_ANSWER_LENGTH 30	//the maximum number of characters that can be used to store the answers of the quadratic equation
-
-// Global Variable Declaration.
 
 
 // Method Declaration.
@@ -125,6 +113,7 @@ int main(int argc, char* argv[]) {
     exit_program(0);
 }
 
+
 /**
  * Runs the quad solver equation and outputs results.
  */
@@ -195,6 +184,7 @@ void run_quad_solver(double a, double b, double c) {
     }
 }
 
+
 /**
  * Convert a string in the form "A B C" to doubles. Whitespace is ignored.
  *
@@ -242,6 +232,7 @@ char parse_doubles(const char *string, double *a, double *b, double *c) {
 
     return 0;
 }
+
 
 /**
  * Handles program exit and cleanup.
