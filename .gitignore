@@ -2,6 +2,7 @@
 # Ignore compiled files.
 a.out
 quad_solver
+unit_tests
 *.o
 
 # Ignore spike compiled files.

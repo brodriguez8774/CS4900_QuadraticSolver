@@ -5,14 +5,18 @@
 
 
 // Import headers.
-#ifndef quad_solver_core_imports
-    #define quad_solver_core_imports
+#ifndef _QUAD_SOLVER_CORE_IMPORTS
+    #define _QUAD_SOLVER_CORE_IMPORTS
     #include <ctype.h>
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
     #include <time.h>
-#endif
+#endif // _QUAD_SOLVER_CORE_IMPORTS
+
+
+// Constant Defines.
+#define MAX_ANSWER_LENGTH 30    // The maximum number of chars used to store the quadratic equation answers.
 
 
 // Function Prototypes.
