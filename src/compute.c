@@ -54,3 +54,43 @@ void computation_struct_free(COMPUTATION_STRUCT *computation_struct) {
     }
     free(computation_struct);
 }
+
+
+/**
+ * Calculate x plus.
+ */
+COMPUTATION_STRUCT *calculate_x_plus(float a, float b, float c) {
+    float x_plus;
+    COMPUTATION_STRUCT *x_plus_struct;
+
+    // printf("Calculating (%f + (%f^2 - 4*%f*%f)^(1/2))/(2*%f)\n", (-1*b), b, a, c, a);
+
+    // Removes any possible lingering floating point exceptions.
+    feclearexcept(FE_ALL_EXCEPT);
+
+    // Determines the value of x_plus using the quadratic formula
+    x_plus = (((-1 * b) + sqrt((b * b) - (4 * a * c))) / (2 * a));
+    x_plus_struct = computation_struct_new(x_plus);
+
+    return x_plus_struct;
+}
+
+
+/**
+ * Calculate x minus.
+ */
+COMPUTATION_STRUCT *calculate_x_minus(float a, float b, float c) {
+    float x_minus;
+    COMPUTATION_STRUCT *x_minus_struct;
+
+    // printf("Calculating (%f - (%f^2 - 4*%f*%f)^(1/2)/(2*%f)))\n", (-1*b), b, a, c, a);
+
+    // Removes any possible lingering floating point exceptions.
+    feclearexcept(FE_ALL_EXCEPT);
+
+    // Determines the value of x_plus using the quadratic formula
+    x_minus = (((-1 * b) - sqrt((b * b) - (4 * a * c))) / (2 * a));
+    x_minus_struct = computation_struct_new(x_minus);
+
+    return x_minus_struct;
+}

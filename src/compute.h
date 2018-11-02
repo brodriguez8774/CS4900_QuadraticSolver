@@ -25,6 +25,8 @@ typedef struct {
 // Function Prototypes.
 COMPUTATION_STRUCT *computation_struct_new(float original_x);
 void computation_struct_free(COMPUTATION_STRUCT *computation_struct);
+COMPUTATION_STRUCT *calculate_x_plus(float a, float b, float c);
+COMPUTATION_STRUCT *calculate_x_minus(float a, float b, float c);
 
 
 #endif // _QUAD_SOLVER_COMPUTE_H
