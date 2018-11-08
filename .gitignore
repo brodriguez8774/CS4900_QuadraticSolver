@@ -4,6 +4,7 @@ a.out
 src/quad_solver
 src/unit_tests
 *.o
+*.out
 
 # Ignore spike compiled files.
 spikes/ieee_floating_point/float
