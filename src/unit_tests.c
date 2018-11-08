@@ -70,6 +70,7 @@ int main(int argc, char* argv[]) {
  */
 void test_computation_struct(void) {
     float a_float;
+    double a_double;
     COMPUTATION_STRUCT *a_struct;
 
     printf("\n");
@@ -164,7 +165,8 @@ void test_computation_struct(void) {
 
     // Test with value "1.23456789876543210". Should round.
     feclearexcept(FE_ALL_EXCEPT);   // Removes possible lingering floating point exceptions.
-    a_float = 1.23456789876543210;
+    a_double = 1.23456789876543210;
+    a_float = (float) a_double;
     a_struct = computation_struct_new(a_float);
     CU_ASSERT_PTR_NOT_NULL(a_struct);
     CU_ASSERT_DOUBLE_EQUAL(a_struct->x, a_float, 0.000001);
