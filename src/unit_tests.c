@@ -11,6 +11,7 @@
 
 
 // Import headers.
+#include <fenv.h>
 #include <CUnit/Basic.h>
 #include "compute.h"
 #include "helper.h"
@@ -172,7 +173,6 @@ void test_computation_struct(void) {
     CU_ASSERT_DOUBLE_EQUAL(a_struct->x, a_float, 0.000001);
     CU_ASSERT_STRING_EQUAL(a_struct->x_as_string, "1.234568");
     CU_ASSERT_EQUAL(a_struct->string_needs_free, 1);
-    // TODO: Should this fail? I'm not very familiar with the floating point exceptions but I think it should.
     CU_ASSERT_EQUAL(a_struct->rounding_error, 1);
     computation_struct_free(a_struct);
 }

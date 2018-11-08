@@ -7,8 +7,6 @@
 // Import headers.
 #ifndef _QUAD_SOLVER_COMPUTE_H
     #define _QUAD_SOLVER_COMPUTE_H
-    #include <fenv.h>
-    #include <math.h>
     #include "helper.h"
 
 
