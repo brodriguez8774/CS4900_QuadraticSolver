@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
         "NUM_FORMAT: A, B, C are in the following format: n[.n][En]\n"
         "            where n is any number of digits.\n"
         "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
-        "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
+        "Created by Steven H Johnson, Brandon Rodriguez, and Joshua Sziede.",
         5);
 
     // logging option
