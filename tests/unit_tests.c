@@ -13,11 +13,13 @@
 // Import headers.
 #include <fenv.h>
 #include <CUnit/Basic.h>
+#include "../src/argparse.h"
 #include "../src/compute.h"
 #include "../src/helper.h"
 
 
 // Method Declaration.
+void test_argparse();
 void test_computation_struct();
 void test_x_plus_computation();
 void test_x_minus_computation();
@@ -50,7 +52,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Now add tests to given suite.
-    if ((CU_add_test(test_suite, "test_computation_struct", test_computation_struct) == NULL) ||
+    if ((CU_add_test(test_suite, "test_argparse", test_argparse) == NULL) ||
+        (CU_add_test(test_suite, "test_computation_struct", test_computation_struct) == NULL) ||
         (CU_add_test(test_suite, "test_x_plus_computation", test_x_plus_computation) == NULL) ||
         (CU_add_test(test_suite, "test_x_minus_computation", test_x_minus_computation) == NULL)) {
 
@@ -63,6 +66,27 @@ int main(int argc, char* argv[]) {
     CU_basic_run_tests();
     CU_cleanup_registry();
     return CU_get_error();
+}
+
+
+/**
+ * Tests creation and return values of argparse.
+ */
+void test_argparse(void) {
+    int arg_count = 2;
+    char *prologue = "Test Prologue (Title)";
+    char *description = "Test Description";
+    char *epilogue = "Test Epilogue";
+
+    ARGPARSE *argparse = argparse_new(prologue, description, epilogue, arg_count);
+    CU_ASSERT_PTR_NOT_NULL(argparse);
+    CU_ASSERT_EQUAL(argparse->prologue, prologue);
+    CU_ASSERT_EQUAL(argparse->description, description);
+    CU_ASSERT_EQUAL(argparse->epilogue, epilogue);
+    CU_ASSERT_EQUAL(argparse->arguments_size, (arg_count + 1));
+
+    argparse_free(argparse);
+
 }
 
 
