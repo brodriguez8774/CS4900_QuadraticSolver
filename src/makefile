@@ -33,10 +33,3 @@ clean:
 
 valgrind: $(TARGET)
 	valgrind --leak-check=full --show-reachable=yes ./$(TARGET) -n 2 4 8
-
-unit_tests : unit_tests.c argparse.o compute.o my_sqrt.o helper.o prompt.o
-	${CC} -o unit_tests $^ $(LIBS) -lcunit
-
-# NOTE: Valgrind doesn't support fp errors, and causes tests to fail
-test: unit_tests
-	./unit_tests

@@ -13,8 +13,8 @@
 // Import headers.
 #include <fenv.h>
 #include <CUnit/Basic.h>
-#include "compute.h"
-#include "helper.h"
+#include "../src/compute.h"
+#include "../src/helper.h"
 
 
 // Method Declaration.

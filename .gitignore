@@ -2,7 +2,6 @@
 # Ignore compiled files.
 a.out
 src/quad_solver
-src/unit_tests
 *.o
 *.out
 
