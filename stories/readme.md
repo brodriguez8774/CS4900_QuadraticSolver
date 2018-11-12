@@ -2,4 +2,4 @@
 # C - Quadratic Solver > Stories
 
 ## Description
-Project stories go here.
+Archive of stories reports used for the Quadratic Solver. Titles of each document refer to the date of Monday from the week for which they were turned in to the professor.
