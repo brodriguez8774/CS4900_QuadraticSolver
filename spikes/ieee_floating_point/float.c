@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	//who doesn't love fun facts?
-	printf("\nFirst of all, here are some fun facts on how your machine handles floating point numbers!\nMax value of floats: %f\nMin value of positive floats: %f\nRounding method: %s\nMantissa precision: %i bits\n", FLT_MAX, FLT_MIN, floatRound, FLT_MANT_DIG);
+	printf("\nFirst of all, here are some fun facts on how your machine handles floating point numbers!\nMax value of floats: %.10e\nMin value of positive floats: %.10e\nRounding method: %s\nMantissa precision: %i bits\n", FLT_MAX, FLT_MIN, floatRound, FLT_MANT_DIG);
 
 	printf("\nYour input number as a float: %f\nRounding error: %lf\n", number, roundError);
 

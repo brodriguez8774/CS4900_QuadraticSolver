@@ -15,18 +15,9 @@
 /**
  * Creates computation struct.
  */
-COMPUTATION_STRUCT *computation_struct_new(float original_x) {
+COMPUTATION_STRUCT *computation_struct_new(double original_x) {
     COMPUTATION_STRUCT *computation_struct = calloc_or_quit(1, sizeof(COMPUTATION_STRUCT));
     computation_struct->x = original_x;
-
-    // Determines if rounding error was detected while calculating x_plus.
-    if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
-        computation_struct->rounding_error = 1;
-        computation_struct->rounding_error_display = "Yes\0";
-    } else {
-        computation_struct->rounding_error = 0;
-        computation_struct->rounding_error_display = "No\0";
-    }
 
     // Check if x is imaginary. If so, set as "Imaginary". Else, convert float to string.
     if (isnan(computation_struct->x)) {
@@ -35,14 +26,11 @@ COMPUTATION_STRUCT *computation_struct_new(float original_x) {
     } else {
         computation_struct->string_needs_free = 1;
         computation_struct->x_as_string = calloc_or_quit(MAX_ANSWER_LENGTH, sizeof(char*));
-        sprintf(computation_struct->x_as_string, "%f", computation_struct->x);
+        sprintf(computation_struct->x_as_string, "%.10E", computation_struct->x);
     }
 
-    // Remove any possible lingering floating point exceptions.
-    feclearexcept(FE_ALL_EXCEPT);
-
     // Print out struct values.
-    // printf("x: %f\nx Rounding Error: %d\n\n", computation_struct->x, computation_struct->rounding_error);
+    // printf("x: %f\n", computation_struct->x);
 
     return computation_struct;
 }
@@ -58,56 +46,44 @@ void computation_struct_free(COMPUTATION_STRUCT *computation_struct) {
     free(computation_struct);
 }
 
+int calculate_roots(double a, double b, double c, COMPUTATION_STRUCT **root1, COMPUTATION_STRUCT **root2) {
+    double r1 = NAN;
+    double r2 = NAN;
+    double rooted = NAN;
+    int inexact = 0;
 
-/**
- * Calculate x plus.
- */
-COMPUTATION_STRUCT *calculate_x_plus(float a, float b, float c) {
-    float x_plus = 0;
-    double determinant = 0;
-    double rooted = 0;
-    COMPUTATION_STRUCT *x_plus_struct;
-
-    // printf("Calculating (%f + (%f^2 - 4*%f*%f)^(1/2))/(2*%f)\n", (-1*b), b, a, c, a);
-
-    // Removes any possible lingering floating point exceptions.
+    // Remove any possible lingering floating point exceptions.
     feclearexcept(FE_ALL_EXCEPT);
 
-    // Determines the value of x_plus using the quadratic formula
-    determinant = (b * b) - (4 * a * c);
+    double determinant = (b * b) - 4 * a * c;
+
     if (my_sqrt(determinant, &rooted) != 0) {
-        // TODO: Should this function return an error code?
         code_error_quit("Invalid parameters");
     }
-    x_plus = (((-1 * b) + rooted) / (2 * a));
-    x_plus_struct = computation_struct_new(x_plus);
 
-    return x_plus_struct;
-}
-
-
-/**
- * Calculate x minus.
- */
-COMPUTATION_STRUCT *calculate_x_minus(float a, float b, float c) {
-    float x_minus;
-    double determinant = 0;
-    double rooted = 0;
-    COMPUTATION_STRUCT *x_minus_struct;
-
-    // printf("Calculating (%f - (%f^2 - 4*%f*%f)^(1/2)/(2*%f)))\n", (-1*b), b, a, c, a);
-
-    // Removes any possible lingering floating point exceptions.
-    feclearexcept(FE_ALL_EXCEPT);
-
-    // Determines the value of x_plus using the quadratic formula
-    determinant = (b * b) - (4 * a * c);
-    if (my_sqrt(determinant, &rooted) != 0) {
-        // TODO: Should this function return an error code?
-        code_error_quit("Invalid parameters");
+    // See Page 7 of "What Every Computer Scientist Should Know About Floating-Point Arithmetic"
+    // For Quadratic Equation that limits precision loss.
+    if (b < 0) {
+        r1 = (-b + rooted) / (2 * a);
+        r2 = c / (a * r1);
+    } else if (b > 0) {
+        r1 = (-b - rooted) / (2 * a);
+        r2 = c / (a * r1);
+    } else {
+        if (my_sqrt(c / a, &r1) != 0) {
+            code_error_quit("Invalid parameters");
+        }
+        r2 = -r1;
     }
-    x_minus = (((-1 * b) - rooted) / (2 * a));
-    x_minus_struct = computation_struct_new(x_minus);
 
-    return x_minus_struct;
+    if (fetestexcept(FE_INEXACT) && FE_INEXACT) {
+        inexact = 1;
+    }
+
+    //printf("Roots: %.10E, %.10E\n", r1, r2);
+
+    *root1 = computation_struct_new(r1);
+    *root2 = computation_struct_new(r2);
+
+    return inexact;
 }

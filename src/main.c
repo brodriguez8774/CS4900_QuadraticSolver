@@ -17,6 +17,8 @@
 
 
 // Import headers.
+#include <float.h>
+#include <math.h>
 #include "argparse.h"
 #include "compute.h"
 #include "helper.h"
@@ -34,6 +36,7 @@ char parse_doubles(const char *string, double *a, double *b, double *c);
  * Initializes and runs program.
  */
 int main(int argc, char* argv[]) {
+    int exit_code = 1;
     printf("\n");
 
     ARGPARSE *argparse = argparse_new(
@@ -88,7 +91,7 @@ int main(int argc, char* argv[]) {
             }
             free(input_string);
         }
-        printf("Received floats:\nA: %f\nB: %f\nC: %f\n", a, b, c);
+        printf("Received floats:\nA: %.10E\nB: %.10E\nC: %.10E\n", a, b, c);
 
         // Check for valid args.
         if (a == 0) {
@@ -96,15 +99,36 @@ int main(int argc, char* argv[]) {
             printf("Recieved %fx^2 + %fx + %f. Invalid equation, A can't be zero.\n", a, b, c);
             printf("Note that non-integer values are parsed as \"0\".\n");
             printf("Please try again.\n");
+        // a, b, c > 0 or NAN
+        } else if ((a > 0 && (a < FLT_MIN || a > FLT_MAX)) || isnan(a)) {
+            printf("The first value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
+            printf("Please try again.\n");
+        } else if ((b > 0 && (b < FLT_MIN || b > FLT_MAX)) || isnan(b)) {
+            printf("The second value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
+            printf("Please try again.\n");
+        } else if ((c > 0 && (c < FLT_MIN || c > FLT_MAX)) || isnan(c)) {
+            printf("The last value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
+            printf("Please try again.\n");
+        // a, b, c < 0
+        } else if (a < 0 && (a < -FLT_MAX || a > -FLT_MIN)) {
+            printf("The first value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
+            printf("Please try again.\n");
+        } else if (b < 0 && (b < -FLT_MAX || b > -FLT_MIN)) {
+            printf("The second value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
+            printf("Please try again.\n");
+        } else if (c < 0 && (c < -FLT_MAX || c > -FLT_MIN)) {
+            printf("The last value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
+            printf("Please try again.\n");
         } else {
-            // At least one of a, b, or c is non-zero. Execute solver.
+            // Values are valid. Execute solver.
             run_quad_solver(a, b, c);
+            exit_code = 0;
         }
     }
 
     argparse_free(argparse);
 
-    exit_program(0);
+    exit_program(exit_code);
 }
 
 
@@ -112,20 +136,24 @@ int main(int argc, char* argv[]) {
  * Runs the quad solver equation and outputs results.
  */
 void run_quad_solver(double a, double b, double c) {
-    COMPUTATION_STRUCT *x_plus_struct;
-    COMPUTATION_STRUCT *x_minus_struct;
+    printf("Calculating %.01Ex^2 + %.01Ex + %.01E = 0.\n", a, b, c);
 
-    printf("Calculating %fx^2 + %fx + %f.\n", a, b, c);
+    COMPUTATION_STRUCT *root1;
+    COMPUTATION_STRUCT *root2;
+    int inexact = 0;
 
-    x_plus_struct = calculate_x_plus(a, b, c);
-    x_minus_struct = calculate_x_minus(a, b, c);
+    inexact = calculate_roots(a, b, c, &root1, &root2);
 
-    printf("Results:\n\tX1: %s\n\tPossible rounding error: %s\n\n\tX2: %s\n\tPossible rounding error: %s\n",
-        x_plus_struct->x_as_string, x_plus_struct->rounding_error_display,
-        x_minus_struct->x_as_string, x_minus_struct->rounding_error_display);
+    char *round_error = "No";
+    if (inexact) {
+        round_error = "Yes";
+    }
 
-    computation_struct_free(x_plus_struct);
-    computation_struct_free(x_minus_struct);
+    printf("Results:\n\tr1: %s\n\n\tr2: %s\n\n\tInexact: %s\n",
+        root1->x_as_string, root2->x_as_string, round_error);
+
+    computation_struct_free(root1);
+    computation_struct_free(root2);
 }
 
 
@@ -135,6 +163,12 @@ void run_quad_solver(double a, double b, double c) {
  * Returns 0 if no error, 1 if error.
  */
 char parse_doubles(const char *string, double *a, double *b, double *c) {
+
+    if (sscanf(string, "%lf %lf %lf", a, b, c) != 3) {
+        return 1;
+    }
+
+    return 0;
     char *token = calloc_or_quit(MAX_ANSWER_LENGTH+1, 1);
     char x = '\0';
     size_t i = 0;
