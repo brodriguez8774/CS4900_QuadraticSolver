@@ -1,16 +1,22 @@
-TARGET = sqrt 
+# Makefile for Square Root spikes.
+
+TARGET = sqrt
 LIBS = -lm
 CC = gcc
 CFLAGS = -Wall -pedantic -std=gnu99 -g
 
+
+# Ensure that commands run as intended, even if file with same name exists.
 .PHONY: default all clean
 
+# Default command if nothing is passed.
 default: $(TARGET)
 all: default
 
-# Expect a .o for each .c file in the directory
+
+# Expect a .o for each .c file in the directory.
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
-# Get all .h files in the directory
+# Get all .h files in the directory.
 HEADERS = $(wildcard *.h)
 
 %.o: %.c $(HEADERS)
@@ -21,24 +27,25 @@ HEADERS = $(wildcard *.h)
 $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
 
-# Remove older builds
+
+# Remove older builds and clear temp files.
 clean:
 	-rm -f $(OBJECTS)
 	-rm -f $(TARGET)
 
-# Update time of modification
+# Update time of modification.
 touch:
 	touch *.h
 	touch *.c
 
-# Advanced memory usage stats as well as crash reporting
+# Advanced memory usage stats as well as crash reporting.
 valgrind: $(TARGET)
 	valgrind --leak-check=full --show-reachable=yes ./$(TARGET)
 
-# Debug
+# Debug.
 debug:
 	gdb $(TARGET)
 
-# Run compiled code
+# Run compiled code.
 test:
 	./$(TARGET) 123456.78
