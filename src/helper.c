@@ -143,11 +143,10 @@ void va_to_console(const char *s_file_name,
 
     // Create formatted string, with default formatting.
     format_string = calloc(MAX_LOG_STRING_LENGTH, sizeof(char*));
-    sprintf(format_string, "%s [%d-%d-%d %d:%d:%d] %s %d: %s\n",
-        log_level,
+    sprintf(format_string, "[%d-%d-%d %d:%d:%d] [%s] %s %d: %s\n",
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
         timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec,
-        s_file_name, s_line_num, s_format_string
+        log_level, s_file_name, s_line_num, s_format_string
     );
 
     // Print to console.
@@ -173,11 +172,10 @@ void va_to_info_file(const char *s_file_name,
 
     // Create initial formatted string, with default formatting.
     format_string = calloc_or_quit(MAX_LOG_STRING_LENGTH, sizeof(char*));
-    sprintf(format_string, "%s [%d-%d-%d %d:%d:%d] %s %d: %s\n",
-        log_level,
+    sprintf(format_string, "[%d-%d-%d %d:%d:%d] [%s] %s %d: %s\n",
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
         timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec,
-        s_file_name, s_line_num, s_format_string
+        log_level, s_file_name, s_line_num, s_format_string
     );
 
     // Save to log file.
@@ -205,11 +203,10 @@ void va_to_warn_file(const char *s_file_name,
 
     // Create initial formatted string, with default formatting.
     format_string = calloc_or_quit(MAX_LOG_STRING_LENGTH, sizeof(char*));
-    sprintf(format_string, "%s [%d-%d-%d %d:%d:%d] %s %d: %s\n",
-        log_level,
+    sprintf(format_string, "[%d-%d-%d %d:%d:%d] [%s] %s %d: %s\n",
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
         timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec,
-        s_file_name, s_line_num, s_format_string
+        log_level, s_file_name, s_line_num, s_format_string
     );
 
     // Save to log file.
@@ -237,11 +234,10 @@ void va_to_error_file(const char *s_file_name,
 
     // Create initial formatted string, with default formatting.
     format_string = calloc_or_quit(MAX_LOG_STRING_LENGTH, sizeof(char*));
-    sprintf(format_string, "%s [%d-%d-%d %d:%d:%d] %s %d: %s\n",
-        log_level,
+    sprintf(format_string, "[%d-%d-%d %d:%d:%d] [%s] %s %d: %s\n",
         timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
         timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec,
-        s_file_name, s_line_num, s_format_string
+        log_level, s_file_name, s_line_num, s_format_string
     );
 
     // Save to log file.
