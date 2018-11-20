@@ -12,5 +12,6 @@ quad_solver:
 test_int_all: quad_solver
 	./test_ranges.sh $(SRC_DIR)
 
+# Clean does nothing for now
 clean:
-	rm *.temp
+	@:

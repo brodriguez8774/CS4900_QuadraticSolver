@@ -35,3 +35,4 @@ test:
 clean:
 	make -C src clean
 	make -C tests clean
+	rm -rf $(PROGRAM_NAME)-$(VERSION).tar.gz

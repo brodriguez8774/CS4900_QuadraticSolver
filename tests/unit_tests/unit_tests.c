@@ -13,9 +13,9 @@
 // Import headers.
 #include <fenv.h>
 #include <CUnit/Basic.h>
-#include "../src/argparse.h"
-#include "../src/compute.h"
-#include "../src/helper.h"
+#include "../../src/argparse.h"
+#include "../../src/compute.h"
+#include "../../src/helper.h"
 
 
 // Method Declaration.
