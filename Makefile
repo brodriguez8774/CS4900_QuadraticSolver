@@ -11,10 +11,15 @@ FILE_LIST = \
 	spikes \
 	stories
 
+
+# Ensure that commands run as intended, even if file with same name exists.
 .PHONY: build distribute test clean
 
+# Default command if nothing is passed.
 default: build
 
+
+# Build and zip up project into tar file.
 distribute:
 	make -C src clean
 	make -C tests clean
@@ -24,14 +29,18 @@ distribute:
 	tar cf - $(PROGRAM_NAME)-$(VERSION) | gzip -9c > $(PROGRAM_NAME)-$(VERSION).tar.gz
 	rm -rf $(PROGRAM_NAME)-$(VERSION)
 
+# Build project in src directory.
 build:
 	make -C src
 	@echo "Binary created at src/quad_solver"
 
+# Run all program tests.
 test:
 	make -C src
 	make -C tests
 
+
+# Remove older builds and clear temp files.
 clean:
 	make -C src clean
 	make -C tests clean
