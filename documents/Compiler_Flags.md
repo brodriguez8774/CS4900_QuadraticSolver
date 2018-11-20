@@ -9,8 +9,8 @@ Wall is used to enable many warnings that would otherwise be ignored. Typically 
 #### -pedantic
 Similar to Wall, we want to prevent any undesired or inconsistent behavior that may occur after compilation. pedantic enables more warning messages during compilation that would otherwise be ignored.
 
-### -std=c99
+#### -std=c99
 This tells the compiler we want to follow the C99 standard during compilation.
 
-### -g
+#### -g
 g allows the compiler to produce debugging information that may be useful.
