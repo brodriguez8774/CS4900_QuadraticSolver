@@ -8,4 +8,4 @@ To help us understand the data and tools we are going to be working with for the
 * The sqrt() function from the Math library
 * Unit Testing in CUnit
 
-All spikes will be created using the C programming language.
+All spikes will be created using the C programming language and placed into their own subdirectories within the spikes directory.
