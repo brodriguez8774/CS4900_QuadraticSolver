@@ -5,4 +5,5 @@ Every directory will have a readme describing at a minimum the purpose of the di
 * Documents - any documents relevant to the creation and implementation of the project.
 * Spikes - any spike programs created to aid us in understanding the project.
 * Src - all code and necessary files used for the quadratic solver program specifically
+* Stories - all stories and TPS reports created to track project completion
 * Tests - all unit tests created for the quadratic solver program
