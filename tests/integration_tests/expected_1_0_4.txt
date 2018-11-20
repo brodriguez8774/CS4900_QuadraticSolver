@@ -1,0 +1,15 @@
+
+Please enter A B C.
+: Received floats:
+A: 1.0000000000E+00
+B: 0.0000000000E+00
+C: 4.0000000000E+00
+Calculating 1.0E+00x^2 + 0.0E+00x + 4.0E+00 = 0.
+Results:
+	r1: Imaginary
+
+	r2: Imaginary
+
+	Inexact: No
+
+Exiting program with code of 0.

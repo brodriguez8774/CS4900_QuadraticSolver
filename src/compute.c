@@ -70,7 +70,7 @@ int calculate_roots(double a, double b, double c, COMPUTATION_STRUCT **root1, CO
         r1 = (-b - rooted) / (2 * a);
         r2 = c / (a * r1);
     } else {
-        if (my_sqrt(c / a, &r1) != 0) {
+        if (my_sqrt(-(c / a), &r1) != 0) {
             code_error_quit("Invalid parameters");
         }
         r2 = -r1;
