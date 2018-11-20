@@ -1,9 +1,0 @@
-
-Spike Standards
-
-
-At the very least, will have the following spikes:
-    * IEEE floating point:
-        * Testing of Inf
-        * Testing of -Inf
-        * Testing of NaN

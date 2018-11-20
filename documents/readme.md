@@ -2,7 +2,4 @@
 # C - Quadratic Solver > Documents
 
 ## Description
-Project documents and standards files go here.
-
-C Coding Standard.pdf - Standard from CMU.
-Link: https://users.ece.cmu.edu/~eno/coding/CCodingStandard.html
+The documents directory contains various documents regarding information that we learned for the development of the quadratic solver, as well as standards that we used to guide us through the project. For this project, we first had to decide a general programming standard to utilize before we could begin the development of the quadratic solver. Once we selected a programming standard, we began creating our own standards that are specific to this project and its development cycle.
