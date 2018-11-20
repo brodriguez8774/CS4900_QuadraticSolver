@@ -31,9 +31,6 @@ void test_computation_struct();
  */
 int main(int argc, char* argv[]) {
 
-    // COMPUTATION_STRUCT *a_struct = computation_struct_new(5.55);
-    // computation_struct_free(a_struct);
-
     // Initialize CUnit registry and check for errors.
     if (CU_initialize_registry() != CUE_SUCCESS) {
         return CU_get_error();
