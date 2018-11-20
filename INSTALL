@@ -1,0 +1,9 @@
+To build and run Quad Solver, simply run the following commands from the top directory:
+
+ $ make
+
+ $ ./src/quad_solver
+
+To run all tests, run:
+
+ $ make test
