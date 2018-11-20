@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
             char *input_string = prompt_user("Please enter A B C.", NULL, 255, logging_mode);
             if (parse_doubles(input_string, &a, &b, &c) != 0) {
                 log_error(logging_mode, "%s", "Unexpected number format. Please use 'A B C'");
-                exit_program(1, logging_mode);
+                exit_code = 1;
             }
             free(input_string);
         }
