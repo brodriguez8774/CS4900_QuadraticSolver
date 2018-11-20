@@ -26,9 +26,9 @@
 
 
 // Method Declaration.
-void run_quad_solver();
-void exit_program();
+void run_quad_solver(double a, double b, double c, int logging_mode);
 char parse_doubles(const char *string, double *a, double *b, double *c);
+void exit_program(int exit_code, int logging_mode);
 
 
 /**
@@ -55,12 +55,12 @@ int main(int argc, char* argv[]) {
     // logging option
     ARGKEY arg_logging = argparse_add_argument(
         argparse, "--log", "-l", "Enable logging mode.", 0);
-    char logging_mode = 0; // TODO: Use this logging flag in our code
+    char logging_mode = 0;
 
     // test input 3 numbers with flag
     ARGKEY arg_nums = argparse_add_argument(
         argparse, "--nums", "-n", "Accepts three numbers 'A B C'. See NUM_FORMAT", 3);
-    char nums_set = 0;
+    int nums_set = 0;
 
     char parse_errors = argparse_parse(argparse, argc, argv);
     if (parse_errors == 0) {
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
         logging_mode = argparse_get_argument(argparse, arg_logging, NULL, NULL);
 
         if (logging_mode) {
-            printf("TODO: Do logging!\n");
+            log_info(logging_mode, "%s", "Logging is enabled.");
         }
 
         double a = 0;
@@ -84,59 +84,59 @@ int main(int argc, char* argv[]) {
             c = strtod(string_nums[2], NULL);
         } else {
             // Need to prompt for A B C
-            char *input_string = prompt_user("Please enter A B C.", NULL, 255);
+            char *input_string = prompt_user("Please enter A B C.", NULL, 255, logging_mode);
             if (parse_doubles(input_string, &a, &b, &c) != 0) {
-                fprintf(stderr, "Unexpected number format. Please use 'A B C'\n");
-                exit(1);
+                log_error(logging_mode, "%s", "Unexpected number format. Please use 'A B C'");
+                exit_program(1, logging_mode);
             }
             free(input_string);
         }
-        printf("Received floats:\nA: %.10E\nB: %.10E\nC: %.10E\n", a, b, c);
+        log_info(logging_mode, "Received floats:\nA: %.10E\nB: %.10E\nC: %.10E", a, b, c);
 
         // Check for valid args.
         if (a == 0) {
             // Invalid args provided. Exiting.
-            printf("Recieved %fx^2 + %fx + %f. Invalid equation, A can't be zero.\n", a, b, c);
-            printf("Note that non-integer values are parsed as \"0\".\n");
-            printf("Please try again.\n");
+            log_warn(logging_mode, "Recieved %fx^2 + %fx + %f. Invalid equation, A can't be zero.", a, b, c);
+            log_warn(logging_mode, "%s", "Note that non-integer values are parsed as \"0\".");
+            log_warn(logging_mode, "%s", "Please try again.");
         // a, b, c > 0 or NAN
         } else if ((a > 0 && (a < FLT_MIN || a > FLT_MAX)) || isnan(a)) {
-            printf("The first value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The first value is not within the exclusive range %.10e - %.10e", FLT_MIN, FLT_MAX);
+            log_warn(logging_mode, "%s", "Please try again.");
         } else if ((b > 0 && (b < FLT_MIN || b > FLT_MAX)) || isnan(b)) {
-            printf("The second value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The second value is not within the exclusive range %.10e - %.10e", FLT_MIN, FLT_MAX);
+            log_warn(logging_mode, "%s", "Please try again.");
         } else if ((c > 0 && (c < FLT_MIN || c > FLT_MAX)) || isnan(c)) {
-            printf("The last value is not within the exclusive range %.10e - %.10e\n", FLT_MIN, FLT_MAX);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The last value is not within the exclusive range %.10e - %.10e", FLT_MIN, FLT_MAX);
+            log_warn(logging_mode, "%s", "Please try again.");
         // a, b, c < 0
         } else if (a < 0 && (a < -FLT_MAX || a > -FLT_MIN)) {
-            printf("The first value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The first value is not within the exclusive range %.10e - %.10e", -FLT_MAX, -FLT_MIN);
+            log_warn(logging_mode, "%s", "Please try again.");
         } else if (b < 0 && (b < -FLT_MAX || b > -FLT_MIN)) {
-            printf("The second value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The second value is not within the exclusive range %.10e - %.10e", -FLT_MAX, -FLT_MIN);
+            log_warn(logging_mode, "%s", "Please try again.");
         } else if (c < 0 && (c < -FLT_MAX || c > -FLT_MIN)) {
-            printf("The last value is not within the exclusive range %.10e - %.10e\n", -FLT_MAX, -FLT_MIN);
-            printf("Please try again.\n");
+            log_warn(logging_mode, "The last value is not within the exclusive range %.10e - %.10e", -FLT_MAX, -FLT_MIN);
+            log_warn(logging_mode, "%s", "Please try again.");
         } else {
             // Values are valid. Execute solver.
-            run_quad_solver(a, b, c);
+            run_quad_solver(a, b, c, logging_mode);
             exit_code = 0;
         }
     }
 
     argparse_free(argparse);
 
-    exit_program(exit_code);
+    exit_program(exit_code, logging_mode);
 }
 
 
 /**
  * Runs the quad solver equation and outputs results.
  */
-void run_quad_solver(double a, double b, double c) {
-    printf("Calculating %.01Ex^2 + %.01Ex + %.01E = 0.\n", a, b, c);
+void run_quad_solver(double a, double b, double c, int logging_mode) {
+    log_info(logging_mode, "Calculating %.01Ex^2 + %.01Ex + %.01E = 0.", a, b, c);
 
     COMPUTATION_STRUCT *root1;
     COMPUTATION_STRUCT *root2;
@@ -149,7 +149,7 @@ void run_quad_solver(double a, double b, double c) {
         round_error = "Yes";
     }
 
-    printf("Results:\n\tr1: %s\n\n\tr2: %s\n\n\tInexact: %s\n",
+    log_info(logging_mode, "Results:\n\tr1: %s\n\n\tr2: %s\n\n\tInexact: %s",
         root1->x_as_string, root2->x_as_string, round_error);
 
     computation_struct_free(root1);
@@ -215,7 +215,13 @@ char parse_doubles(const char *string, double *a, double *b, double *c) {
 /**
  * Handles program exit and cleanup.
  */
-void exit_program(int exit_code) {
-    printf("\nExiting program with code of %d.\n", exit_code);
+void exit_program(int exit_code, int logging_mode) {
+    // Check if code is non-zero. If so, log as error. Else log as info.
+    printf("\n");
+    if (exit_code) {
+        log_error(logging_mode, "Exiting program with code of %d.", exit_code);
+    } else {
+        log_info(logging_mode, "Exiting program with code of %d.", exit_code);
+    }
     exit(exit_code);
 }

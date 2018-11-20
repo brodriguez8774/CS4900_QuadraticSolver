@@ -11,12 +11,12 @@
 
 
 /**
- * Same arguments as calloc, but calls perror() on error and exits.
+ * Same arguments as calloc, but calls log_error on error and exits.
  */
 void *calloc_or_quit(size_t nmemb, size_t size) {
     void *ptr = calloc(nmemb, size);
     if (ptr == NULL) {
-        perror("Failed to allocate memory");
+        log_error(1, "%s", "Failed to allocate memory.");
         exit(1);
     }
 
@@ -25,10 +25,10 @@ void *calloc_or_quit(size_t nmemb, size_t size) {
 
 
 /**
- * Prints out error message and exits program with error code of 1.
+ * Logs error message and exits program with error code of 1.
  */
 void code_error_quit(const char *message) {
-    printf("ERROR: %s\n", message);
+    log_error(1, "%s", message);
     exit(1);
 }
 
@@ -37,7 +37,7 @@ void code_error_quit(const char *message) {
  * Wrapper function for info message logging.
  * Calls appropriate logging sub-functions.
  */
-void va_log_info(const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
+void va_log_info(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
     char *log_level = "INFO";
     time_t rawtime;
     struct tm * timeinfo;
@@ -48,15 +48,22 @@ void va_log_info(const char *s_file_name, int s_line_num, const char *s_format_s
     timeinfo = localtime ( &rawtime );
 
     // Call appropriate logging sub-fucntions and handle variable length arg input.
-    // To console.
-    va_start(va_arglist, s_format_string);
-    va_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
-
-    // To info file.
-    va_start(va_arglist, s_format_string);
-    va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+    // Check if logging is enabled.
+    if (log_mode) {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_log_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
+        // To info file.
+        va_start(va_arglist, s_format_string);
+        va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
+    } else {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_print_to_console(s_format_string, va_arglist);
+        va_end(va_arglist);
+    }
 }
 
 
@@ -64,7 +71,7 @@ void va_log_info(const char *s_file_name, int s_line_num, const char *s_format_s
  * Wrapper function for warn message logging.
  * Calls appropriate logging sub-functions.
  */
-void va_log_warn(const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
+void va_log_warn(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
     char *log_level = "WARN";
     time_t rawtime;
     struct tm * timeinfo;
@@ -75,20 +82,28 @@ void va_log_warn(const char *s_file_name, int s_line_num, const char *s_format_s
     timeinfo = localtime ( &rawtime );
 
     // Call appropriate logging sub-fucntions and handle variable length arg input.
-    // To console.
-    va_start(va_arglist, s_format_string);
-    va_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+    // Check if logging is enabled.
+    if (log_mode) {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_log_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
 
-    // To info file.
-    va_start(va_arglist, s_format_string);
-    va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+        // To info file.
+        va_start(va_arglist, s_format_string);
+        va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
 
-    // To warn file.
-    va_start(va_arglist, s_format_string);
-    va_to_warn_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+        // To warn file.
+        va_start(va_arglist, s_format_string);
+        va_to_warn_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
+    } else {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_print_to_console(s_format_string, va_arglist);
+        va_end(va_arglist);
+    }
 }
 
 
@@ -96,7 +111,7 @@ void va_log_warn(const char *s_file_name, int s_line_num, const char *s_format_s
  * Wrapper function for error message logging.
  * Calls appropriate logging sub-functions.
  */
-void va_log_error(const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
+void va_log_error(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...) {
     char *log_level = "ERROR";
     time_t rawtime;
     struct tm * timeinfo;
@@ -107,32 +122,60 @@ void va_log_error(const char *s_file_name, int s_line_num, const char *s_format_
     timeinfo = localtime ( &rawtime );
 
     // Call appropriate logging sub-fucntions and handle variable length arg input.
-    // To console.
-    va_start(va_arglist, s_format_string);
-    va_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+    // Check if logging is enabled.
+    if (log_mode) {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_log_to_console(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
 
-    // To info file.
-    va_start(va_arglist, s_format_string);
-    va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+        // To info file.
+        va_start(va_arglist, s_format_string);
+        va_to_info_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
 
-    // To warn file.
-    va_start(va_arglist, s_format_string);
-    va_to_warn_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+        // To warn file.
+        va_start(va_arglist, s_format_string);
+        va_to_warn_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
 
-    // To error file.
-    va_start(va_arglist, s_format_string);
-    va_to_error_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
-    va_end(va_arglist);
+        // To error file.
+        va_start(va_arglist, s_format_string);
+        va_to_error_file(__FILE__, __LINE__, log_level, timeinfo, s_format_string, va_arglist);
+        va_end(va_arglist);
+    } else {
+        // To console.
+        va_start(va_arglist, s_format_string);
+        va_print_to_console(s_format_string, va_arglist);
+        va_end(va_arglist);
+    }
+}
+
+
+/**
+ * Print variable length message to console.
+ * Does not have datetime or source file information.
+ */
+void va_print_to_console(const char *s_format_string, va_list va_arglist) {
+
+    char *format_string;
+
+    // Create formatted string, with default formatting.
+    format_string = calloc(MAX_LOG_STRING_LENGTH, sizeof(char*));
+    sprintf(format_string, "%s\n", s_format_string);
+
+    // Print to console.
+    vprintf(format_string, va_arglist);
+
+    // Clean up.
+    free(format_string);
 }
 
 
 /**
  * Log variable length message to console.
  */
-void va_to_console(const char *s_file_name,
+void va_log_to_console(const char *s_file_name,
                     int s_line_num,
                     const char *log_level,
                     struct tm * timeinfo,

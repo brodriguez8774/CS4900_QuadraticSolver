@@ -26,12 +26,12 @@
 // Function Prototypes.
 void *calloc_or_quit(size_t nmemb, size_t size);
 void code_error_quit(const char *message);
-void va_log_print(const char *s_file_name, int s_line_num, const char *s_format_string, ...);
-void va_log_info(const char *s_file_name, int s_line_num, const char *s_format_string, ...);
-void va_log_warn(const char *s_file_name, int s_line_num, const char *s_format_string, ...);
-void va_log_error(const char *s_file_name, int s_line_num, const char *s_format_string, ...);
+void va_log_info(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...);
+void va_log_warn(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...);
+void va_log_error(int log_mode, const char *s_file_name, int s_line_num, const char *s_format_string, ...);
+void va_print_to_console(const char *s_format_string, va_list va_arglist);
 
-void va_to_console(const char *s_file_name,
+void va_log_to_console(const char *s_file_name,
     int s_line_num,
     const char *log_level,
     struct tm * timeinfo,
@@ -61,11 +61,11 @@ void va_to_error_file(const char *s_file_name,
 
 
 // Macro definitions.
-#define log_info(s_format_string, ...) \
-    va_log_info(__FILE__, __LINE__, s_format_string, __VA_ARGS__)
+#define log_info(log_mode, s_format_string, ...) \
+    va_log_info(log_mode, __FILE__, __LINE__, s_format_string, __VA_ARGS__)
 
-#define log_warn(s_format_string, ...) \
-    va_log_warn(__FILE__, __LINE__, s_format_string, __VA_ARGS__)
+#define log_warn(log_mode, s_format_string, ...) \
+    va_log_warn(log_mode, __FILE__, __LINE__, s_format_string, __VA_ARGS__)
 
-#define log_error(s_format_string, ...) \
-    va_log_error(__FILE__, __LINE__, s_format_string, __VA_ARGS__)
+#define log_error(log_mode, s_format_string, ...) \
+    va_log_error(log_mode, __FILE__, __LINE__, s_format_string, __VA_ARGS__)

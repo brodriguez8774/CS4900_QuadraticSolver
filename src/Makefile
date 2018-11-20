@@ -32,6 +32,7 @@ prompt.o: prompt.c prompt.h helper.h
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
+	-rm -f ./log/*.txt
 
 # Advanced memory usage stats as well as crash reporting.
 valgrind: $(TARGET)

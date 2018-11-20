@@ -27,10 +27,10 @@
  *     What is your name?
  *     : _
  */
-char *prompt_user(char *text, char *options, size_t size) {
-    printf("%s\n", text);
+char *prompt_user(char *text, char *options, size_t size, int logging_mode) {
+    log_info(logging_mode, "%s", text);
     if (options) {
-        printf("%s", options);
+        log_info(logging_mode, "%s", options);
     }
     printf(": ");
     char *buffer = calloc_or_quit(size, 1);
