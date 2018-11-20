@@ -12,12 +12,14 @@
 
 // Import headers.
 #include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../../src/argparse.h"
 #include "../../src/helper.h"
+#include "../../src/prompt.h"
 
 
 // Method Declaration.
@@ -42,52 +44,34 @@ int main(int argc, char* argv[]) {
         "NUM_FORMAT: A, B, C are in the following format: n[.n][En]\n"
         "            where n is any number of digits.\n"
         "            Examples: 4.24, 4.24E7, 0.0003E1, 234E2",
-        "Created by Steven H Johnson, Brandon Rodriquez, and Joshua Sziede.",
-        4);
+        "Created by Steven H Johnson, Brandon Rodriguez, and Joshua Sziede.",
+        5);
 
-    // Expecting three positional arguments.
-    ARGKEY arg_a = argparse_add_argument(argparse, "A", NULL, "See NUM_FORMAT.");
-    ARGKEY arg_b = argparse_add_argument(argparse, "B", NULL, "See NUM_FORMAT.");
-    ARGKEY arg_c = argparse_add_argument(argparse, "C", NULL, "See NUM_FORMAT.");
-
-    // debug option
-    ARGKEY arg_debug = argparse_add_argument(
-        argparse, "--debug", "-d", "Enable debug mode.");
-    char debug_mode = 0; // TODO: Use this debug flag in our code?
+    // test input 3 numbers with flag
+    ARGKEY arg_nums = argparse_add_argument(
+        argparse, "--nums", "-n", "Accepts three numbers 'A B C'. See NUM_FORMAT", 3);
+    char nums_set = 0;
 
     char parse_errors = argparse_parse(argparse, argc, argv);
     if (parse_errors == 0) {
-        const char *string_a = NULL;
-        const char *string_b = NULL;
-        const char *string_c = NULL;
+        const char **string_nums = NULL;
 
-        argparse_get_argument(argparse, arg_a, &string_a);
-        argparse_get_argument(argparse, arg_b, &string_b);
-        argparse_get_argument(argparse, arg_c, &string_c);
+        nums_set = argparse_get_argument(argparse, arg_nums, NULL, &string_nums);
+        double a = 0;
+        double b = 0;
+        double c = 0;
 
-        debug_mode = argparse_get_argument(argparse, arg_debug, NULL);
-
-        printf("A: %s\nB: %s\nC: %s\n", string_a, string_b, string_c);
-        printf("Debug Mode: %d\n", debug_mode);
-
-        // Three args provided.
-        double a = strtod(string_a, NULL);
-        double b = strtod(string_b, NULL);
-        double c = strtod(string_c, NULL);
-
-        // Check for valid args.
-        if (a == 0) {
-            // Invalid args provided. Exiting.
-            printf("Recieved %fx^2 + %fx + %f. Invalid equation, A can't be zero.\n", a, b, c);
-            printf("Note that non-integer values are parsed as \"0\".\n");
-            printf("Please try again.\n");
+        // Check if arg was provided.
+        if (nums_set) {
+            a = strtod(string_nums[0], NULL);
+            b = strtod(string_nums[1], NULL);
+            c = strtod(string_nums[2], NULL);
+            printf("Received value:\n %f\n %f\n %f\n", a, b, c);
         } else {
-            // At least one of a, b, or c is non-zero. Execute solver.
-            printf("Quad solver computing logic here.\n");
+            printf("No values passed. Please use -n <values> to pass a value.\n");
         }
     }
 
     argparse_free(argparse);
-
     exit(0);
 }

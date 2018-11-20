@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
             display_help_text();
         } else {
             // No other commands supported yet.
-            printf("Unrecognized argument.\n");
+            printf("Unrecognized argument. Please try again.\n");
         }
     } else {
         // Four or more args provided. Display warning and close.
