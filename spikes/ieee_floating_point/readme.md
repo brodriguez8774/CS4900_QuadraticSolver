@@ -7,7 +7,8 @@ Spikes specific to IEEE Floating Point manipulation.
 ## Spikes
 **Authors:**\
 Steven Johnson\
-Joshua Sziede 
+Joshua Sziede
+
 ### Running
 To compile float.c:
 
