@@ -19,6 +19,7 @@ spikes/logging/log_with_macro
 spikes/logging/log_file.txt
 spikes/make/read_from_file
 spikes/unit_testing/unit_tests
+spikes/variadic_macros/variadic_macro
 
 # Ignore vscode files
 .vscode
